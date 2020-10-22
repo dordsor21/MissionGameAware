@@ -1,5 +1,6 @@
 package me.dordsor21.MissionGameAware;
 
+import me.dordsor21.MissionGameAware.command.ManualQueueCommand;
 import me.dordsor21.MissionGameAware.util.RandomTwists;
 import me.dordsor21.MissionGameAware.util.TwistLocks;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -13,6 +14,9 @@ public class MissionGameAware extends JavaPlugin {
     @Override
     public void onEnable() {
         getLogger().info("Enabling MissionGameAware");
+
+        this.getCommand("queuetwist").setExecutor(new ManualQueueCommand());
+
         plugin = this;
     }
 

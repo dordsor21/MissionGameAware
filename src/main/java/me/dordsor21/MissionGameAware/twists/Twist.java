@@ -1,10 +1,11 @@
 package me.dordsor21.MissionGameAware.twists;
 
-import me.dordsor21.MissionGameAware.util.TwistLocks;
+import me.dordsor21.MissionGameAware.MissionGameAware;
 
-public abstract class Twist {
+public abstract class Twist implements AutoCloseable {
 
     private boolean complete = false;
+    private String name = null;
 
     public boolean isComplete() {
         return complete;
@@ -12,11 +13,24 @@ public abstract class Twist {
 
     public void complete() {
         complete = true;
+        MissionGameAware.plugin.getTwistLocks().notify(getType());
     }
 
-    public abstract void start(TwistLocks twistLocks);
+    public abstract void start();
 
     public abstract Type getType();
+
+    public String getTwistName() {
+        if (name == null) {
+            name = getClass().getSimpleName();
+        }
+        return name;
+    }
+
+    @Override
+    public void close() {
+        complete();
+    }
 
     public enum Type {
         NICE, MEAN, EVIL, WEIRD;

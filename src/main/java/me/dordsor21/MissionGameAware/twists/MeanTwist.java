@@ -1,7 +1,5 @@
 package me.dordsor21.MissionGameAware.twists;
 
-import me.dordsor21.MissionGameAware.util.TwistLocks;
-
 public abstract class MeanTwist extends Twist {
 
     @Override
@@ -11,7 +9,7 @@ public abstract class MeanTwist extends Twist {
 
     public static final class NullTwist extends MeanTwist {
         @Override
-        public void start(TwistLocks twistLocks) {
+        public void start() {
         }
 
         @Override

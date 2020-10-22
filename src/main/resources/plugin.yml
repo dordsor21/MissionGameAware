@@ -7,4 +7,7 @@ description: MissionGameAware
 commands:
   MissionGameAware:
     description: MissionGameAware.
-    aliases: [mga]
+    aliases: [ mga ]
+  queuetwist:
+    description: MissionGameAware.
+    aliases: [ qt ]

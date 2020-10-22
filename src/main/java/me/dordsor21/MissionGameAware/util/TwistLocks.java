@@ -80,7 +80,7 @@ public class TwistLocks {
     private boolean checkSoleTwist(Twist twist) {
         if (twist instanceof SoleTwist) {
             if ((queuedTwists - queuedSoleTwists) + runningTwists == 0) {
-                twist.start(this);
+                twist.start();
                 runningTwists++;
             } else {
                 soleTwistQueue.add((SoleTwist) twist);
@@ -89,7 +89,7 @@ public class TwistLocks {
                 return false;
             }
         } else {
-            twist.start(this);
+            twist.start();
             runningTwists++;
         }
         return true;
@@ -106,7 +106,7 @@ public class TwistLocks {
                 weirdTwistQueue.remove(twist);
                 queuedTwists--;
                 queuedSoleTwists--;
-                twist.start(this);
+                twist.start();
                 runningTwists++;
             } else {
                 return;
@@ -116,25 +116,25 @@ public class TwistLocks {
             case NICE:
                 niceTwist = niceTwistQueue.remove(0);
                 queuedTwists--;
-                niceTwist.start(this);
+                niceTwist.start();
                 runningTwists++;
                 break;
             case MEAN:
                 meanTwist = meanTwistQueue.remove(0);
                 queuedTwists--;
-                meanTwist.start(this);
+                meanTwist.start();
                 runningTwists++;
                 break;
             case EVIL:
                 evilTwist = evilTwistQueue.remove(0);
                 queuedTwists--;
-                evilTwist.start(this);
+                evilTwist.start();
                 runningTwists++;
                 break;
             case WEIRD:
                 weirdTwist = weirdTwistQueue.remove(0);
                 queuedTwists--;
-                weirdTwist.start(this);
+                weirdTwist.start();
                 runningTwists++;
                 break;
             default:
