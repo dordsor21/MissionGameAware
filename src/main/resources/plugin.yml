@@ -1,0 +1,10 @@
+name: AdvSwearBlock
+main: me.dordsor21.MissionGameAware.MissionGameAware
+version: 1.0
+api-version: 1.16
+author: dordsor21
+description: MissionGameAware
+commands:
+  MissionGameAware:
+    description: MissionGameAware.
+    aliases: [mga]
