@@ -25,10 +25,11 @@ public class Sheep extends WeirdTwist implements SoleTwist {
             DyeColor.LIGHT_GRAY, DyeColor.LIME, DyeColor.MAGENTA, DyeColor.ORANGE, DyeColor.PINK, DyeColor.PURPLE, DyeColor.RED, DyeColor.WHITE,
             DyeColor.YELLOW};
     private static final IChatBaseComponent jeb = IChatBaseComponent.ChatSerializer.b("jeb_");
+    private Thread t = null;
 
     @Override
     public void start() {
-        new Thread(() -> {
+        t = new Thread(() -> {
             try {
                 for (Player p : Bukkit.getOnlinePlayers()) {
                     p.playSound(p.getLocation(), Sound.ENTITY_SHEEP_AMBIENT, 1.0f, 0.2f);
@@ -46,7 +47,7 @@ public class Sheep extends WeirdTwist implements SoleTwist {
                 for (Player p : Bukkit.getOnlinePlayers()) {
                     List<org.bukkit.entity.Sheep> sheeps = new ArrayList<>();
                     Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
-                        for (int i = 0; i < 10; i++) {
+                        for (int i = 0; i < 7; i++) {
                             org.bukkit.entity.Sheep sheep = (org.bukkit.entity.Sheep) p.getWorld().spawnEntity(p.getEyeLocation(), EntityType.SHEEP);
                             sheep.setVelocity(Vector.getRandom().subtract(halves).multiply(Math.random() * 2));
                             sheep.setInvulnerable(true);
@@ -92,7 +93,8 @@ public class Sheep extends WeirdTwist implements SoleTwist {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }).start();
+        });
+        t.start();
     }
 
     private List<List<org.bukkit.entity.Sheep>> dupe(List<List<org.bukkit.entity.Sheep>> sheepss) {
@@ -125,5 +127,13 @@ public class Sheep extends WeirdTwist implements SoleTwist {
             babiess.add(babies);
         }
         return babiess;
+    }
+
+    @Override
+    public void cancel() {
+        if (t != null) {
+            t.stop();
+        }
+        super.cancel();
     }
 }

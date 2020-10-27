@@ -11,3 +11,6 @@ commands:
   queuetwist:
     description: MissionGameAware.
     aliases: [ qt ]
+  canceltwist:
+    description: MissionGameAware.
+    aliases: [ ct ]

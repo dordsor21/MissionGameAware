@@ -5,15 +5,16 @@ import me.dordsor21.MissionGameAware.twists.MeanTwist;
 import me.dordsor21.MissionGameAware.twists.Twist;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
-import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 
 public class Blindness extends MeanTwist {
 
+    private Thread t = null;
+
     @Override
     public void start() {
-        new Thread(() -> {
+        t = new Thread(() -> {
             try (final Twist twist = Blindness.this) {
                 for (int i = 0; i < 1; i++) {
                     blindAll();
@@ -26,7 +27,16 @@ public class Blindness extends MeanTwist {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }).start();
+        });
+        t.start();
+    }
+
+    @Override
+    public void cancel() {
+        if (t != null) {
+            t.stop();
+        }
+        super.cancel();
     }
 
     private void blindAll() throws InterruptedException {

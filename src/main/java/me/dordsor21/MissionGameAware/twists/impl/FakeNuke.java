@@ -13,9 +13,12 @@ import org.bukkit.entity.TNTPrimed;
 import java.util.Random;
 
 public class FakeNuke extends MeanTwist {
+
+    private Thread t = null;
+
     @Override
     public void start() {
-        new Thread(() -> {
+        t = new Thread(() -> {
             try (final Twist twist = FakeNuke.this) {
                 for (Player p : Bukkit.getOnlinePlayers()) {
                     p.playSound(p.getLocation(), Sound.ENTITY_DRAGON_FIREBALL_EXPLODE, 1.0f, 0.5f);
@@ -43,6 +46,15 @@ public class FakeNuke extends MeanTwist {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }).start();
+        });
+        t.start();
+    }
+
+    @Override
+    public void cancel() {
+        if (t != null) {
+            t.stop();
+        }
+        super.cancel();
     }
 }

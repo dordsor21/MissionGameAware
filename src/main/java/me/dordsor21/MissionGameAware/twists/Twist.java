@@ -14,10 +14,14 @@ public abstract class Twist implements AutoCloseable {
     public void complete() {
         complete = true;
         MissionGameAware.plugin.getLogger().info(getTwistName() + " complete.");
-        MissionGameAware.plugin.getTwistLocks().notifyTwistEnd(this instanceof SoleTwist);
+        MissionGameAware.plugin.getTwistLocks().notifyTwistEnd(this instanceof SoleTwist, true);
     }
 
     public abstract void start();
+
+    public void cancel() {
+        complete = true;
+    }
 
     public abstract Type getType();
 
@@ -35,5 +39,20 @@ public abstract class Twist implements AutoCloseable {
 
     public enum Type {
         NICE, MEAN, EVIL, WEIRD;
+
+        public static Type getValue(String s) {
+            switch (s.toLowerCase()) {
+                case "nice":
+                    return Type.NICE;
+                case "mean":
+                    return Type.MEAN;
+                case "evil":
+                    return Type.EVIL;
+                case "weird":
+                    return Type.WEIRD;
+                default:
+                    return null;
+            }
+        }
     }
 }

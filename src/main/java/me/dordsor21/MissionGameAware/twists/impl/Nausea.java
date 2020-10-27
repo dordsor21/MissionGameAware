@@ -14,6 +14,7 @@ import org.bukkit.potion.PotionEffectType;
 
 public class Nausea extends EvilTwist {
     private NauseaListener listener;
+    private Thread t = null;
 
     @Override
     public void start() {
@@ -23,7 +24,7 @@ public class Nausea extends EvilTwist {
             }
         });
         Bukkit.getPluginManager().registerEvents((listener = new Nausea.NauseaListener()), MissionGameAware.plugin);
-        new Thread(() -> {
+        t = new Thread(() -> {
             try (final Twist twist = Nausea.this) {
                 for (Player p : Bukkit.getOnlinePlayers()) {
                     p.playSound(p.getLocation(), Sound.BLOCK_WET_GRASS_BREAK, 2.0f, 0.2f);
@@ -48,13 +49,22 @@ public class Nausea extends EvilTwist {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }).start();
+        });
+        t.start();
     }
 
     @Override
     public void complete() {
         HandlerList.unregisterAll(listener);
         super.complete();
+    }
+
+    @Override
+    public void cancel() {
+        if (t != null) {
+            t.stop();
+        }
+        super.cancel();
     }
 
     private static final class NauseaListener implements Listener {

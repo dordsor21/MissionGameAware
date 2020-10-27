@@ -16,6 +16,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class LaserFocus extends MeanTwist {
 
     private final AtomicBoolean cancelled = new AtomicBoolean(false);
+    private Thread t = null;
 
     @Override
     public void start() {
@@ -37,7 +38,7 @@ public class LaserFocus extends MeanTwist {
             }
             stareMap.put(p.getUniqueId(), new BlockStareEntry(x, y, z));
         }
-        new Thread(() -> {
+        t = new Thread(() -> {
             while (!cancelled.get()) {
                 long start = System.currentTimeMillis();
                 for (Player p : Bukkit.getOnlinePlayers()) {
@@ -57,13 +58,22 @@ public class LaserFocus extends MeanTwist {
                     e.printStackTrace();
                 }
             }
-        }).start();
+        });
+        t.start();
     }
 
     @Override
     public void complete() {
         cancelled.set(true);
         super.complete();
+    }
+
+    @Override
+    public void cancel() {
+        if (t != null) {
+            t.stop();
+        }
+        super.cancel();
     }
 
     private static final class BlockStareEntry {

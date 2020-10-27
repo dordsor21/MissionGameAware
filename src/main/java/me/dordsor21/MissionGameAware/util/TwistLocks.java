@@ -97,8 +97,10 @@ public class TwistLocks {
         return true;
     }
 
-    public synchronized void notifyTwistEnd(boolean isSole) {
-        runningTwists--;
+    public synchronized void notifyTwistEnd(boolean isSole, boolean decrRunning) {
+        if (decrRunning) {
+            runningTwists--;
+        }
         if (isSole) {
             soleTwistRunning = false;
         }
@@ -141,6 +143,48 @@ public class TwistLocks {
             queuedTwists--;
             weirdTwist.start();
             runningTwists++;
+        }
+    }
+
+    public synchronized void cancelAll() {
+        if (niceTwist != null && !niceTwist.isComplete()) {
+            niceTwist.cancel();
+        }
+        if (meanTwist != null && !meanTwist.isComplete()) {
+            meanTwist.cancel();
+        }
+        if (evilTwist != null && !evilTwist.isComplete()) {
+            evilTwist.cancel();
+        }
+        if (weirdTwist != null && !weirdTwist.isComplete()) {
+            weirdTwist.cancel();
+        }
+        runningTwists = 0;
+        soleTwistRunning = false;
+        notifyTwistEnd(false, false);
+    }
+
+    public synchronized boolean cancel(Twist.Type type) {
+        switch (type) {
+            case NICE:
+                return checkCancel(niceTwist);
+            case MEAN:
+                return checkCancel(meanTwist);
+            case EVIL:
+                return checkCancel(evilTwist);
+            case WEIRD:
+                return checkCancel(weirdTwist);
+        }
+        return false;
+    }
+
+    private boolean checkCancel(final Twist twist) {
+        if (twist == null || twist.isComplete()) {
+            return false;
+        } else {
+            twist.cancel();
+            notifyTwistEnd(twist instanceof SoleTwist, true);
+            return true;
         }
     }
 

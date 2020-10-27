@@ -13,9 +13,11 @@ import java.util.Random;
 
 public class BlindnessTeleport extends MeanTwist {
 
+    private Thread t = null;
+
     @Override
     public void start() {
-        new Thread(() -> {
+        t = new Thread(() -> {
             try (final Twist twist = BlindnessTeleport.this) {
                 for (int i = 0; i < 6; i++) {
                     Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
@@ -36,6 +38,15 @@ public class BlindnessTeleport extends MeanTwist {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }).start();
+        });
+        t.start();
+    }
+
+    @Override
+    public void cancel() {
+        if (t != null) {
+            t.stop();
+        }
+        super.cancel();
     }
 }

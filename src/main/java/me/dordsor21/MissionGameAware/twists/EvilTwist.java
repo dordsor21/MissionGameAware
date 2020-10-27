@@ -13,6 +13,10 @@ public abstract class EvilTwist extends Twist {
         }
 
         @Override
+        public void cancel() {
+        }
+
+        @Override
         public boolean isComplete() {
             return true;
         }

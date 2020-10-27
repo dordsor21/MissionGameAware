@@ -1,5 +1,6 @@
 package me.dordsor21.MissionGameAware;
 
+import me.dordsor21.MissionGameAware.command.ManualCancelCommand;
 import me.dordsor21.MissionGameAware.command.ManualQueueCommand;
 import me.dordsor21.MissionGameAware.util.RandomTwists;
 import me.dordsor21.MissionGameAware.util.TwistLocks;
@@ -16,6 +17,7 @@ public class MissionGameAware extends JavaPlugin {
         getLogger().info("Enabling MissionGameAware");
 
         this.getCommand("queuetwist").setExecutor(new ManualQueueCommand());
+        this.getCommand("canceltwist").setExecutor(new ManualCancelCommand());
 
         plugin = this;
     }
