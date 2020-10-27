@@ -4,7 +4,6 @@ import me.dordsor21.MissionGameAware.MissionGameAware;
 import me.dordsor21.MissionGameAware.twists.EvilTwist;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
-import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -25,11 +24,13 @@ public class Speed10 extends EvilTwist {
 
     @Override
     public void start() {
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "perms group group set byteutil.speeder false");
+        Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "perms group group set byteutil.speeder false");
+        });
         for (Player p : Bukkit.getOnlinePlayers()) {
             p.setFlySpeed(getRealMoveSpeed(true));
             p.setWalkSpeed(getRealMoveSpeed(false));
-            p.playSound(p.getLocation(), Sound.ITEM_ELYTRA_FLYING, SoundCategory.MUSIC, 2.0f, 2.0f);
+            p.playSound(p.getLocation(), Sound.ITEM_ELYTRA_FLYING, 2.0f, 2.0f);
         }
         Bukkit.getPluginManager().registerEvents((listener = new Speed10Listener()), MissionGameAware.plugin);
         Bukkit.getScheduler().runTaskLater(MissionGameAware.plugin, () -> {

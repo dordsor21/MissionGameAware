@@ -21,6 +21,7 @@ public class TwistLocks {
     private int queuedTwists = 0;
     private int queuedSoleTwists = 0;
     private int runningTwists = 0;
+    private boolean soleTwistRunning = false;
     private NiceTwist niceTwist;
     private MeanTwist meanTwist;
     private EvilTwist evilTwist;
@@ -81,6 +82,7 @@ public class TwistLocks {
         if (twist instanceof SoleTwist) {
             if ((queuedTwists - queuedSoleTwists) + runningTwists == 0) {
                 twist.start();
+                soleTwistRunning = true;
                 runningTwists++;
             } else {
                 soleTwistQueue.add((SoleTwist) twist);
@@ -95,8 +97,11 @@ public class TwistLocks {
         return true;
     }
 
-    public synchronized void notify(Twist.Type type) {
+    public synchronized void notifyTwistEnd(boolean isSole) {
         runningTwists--;
+        if (isSole) {
+            soleTwistRunning = false;
+        }
         if (soleTwistQueue.size() > 0) {
             if ((queuedTwists - queuedSoleTwists) + runningTwists == 0) {
                 Twist twist = (Twist) soleTwistQueue.remove(0);
@@ -104,6 +109,7 @@ public class TwistLocks {
                 meanTwistQueue.remove(twist);
                 evilTwistQueue.remove(twist);
                 weirdTwistQueue.remove(twist);
+                soleTwistRunning = true;
                 queuedTwists--;
                 queuedSoleTwists--;
                 twist.start();
@@ -112,33 +118,29 @@ public class TwistLocks {
                 return;
             }
         }
-        switch (type) {
-            case NICE:
-                niceTwist = niceTwistQueue.remove(0);
-                queuedTwists--;
-                niceTwist.start();
-                runningTwists++;
-                break;
-            case MEAN:
-                meanTwist = meanTwistQueue.remove(0);
-                queuedTwists--;
-                meanTwist.start();
-                runningTwists++;
-                break;
-            case EVIL:
-                evilTwist = evilTwistQueue.remove(0);
-                queuedTwists--;
-                evilTwist.start();
-                runningTwists++;
-                break;
-            case WEIRD:
-                weirdTwist = weirdTwistQueue.remove(0);
-                queuedTwists--;
-                weirdTwist.start();
-                runningTwists++;
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid twist type!?");
+        if (niceTwistQueue.size() > 0 && !soleTwistRunning) {
+            niceTwist = niceTwistQueue.remove(0);
+            queuedTwists--;
+            niceTwist.start();
+            runningTwists++;
+        }
+        if (meanTwistQueue.size() > 0 && !soleTwistRunning) {
+            meanTwist = meanTwistQueue.remove(0);
+            queuedTwists--;
+            meanTwist.start();
+            runningTwists++;
+        }
+        if (evilTwistQueue.size() > 0 && !soleTwistRunning) {
+            evilTwist = evilTwistQueue.remove(0);
+            queuedTwists--;
+            evilTwist.start();
+            runningTwists++;
+        }
+        if (weirdTwistQueue.size() > 0 && !soleTwistRunning) {
+            weirdTwist = weirdTwistQueue.remove(0);
+            queuedTwists--;
+            weirdTwist.start();
+            runningTwists++;
         }
     }
 

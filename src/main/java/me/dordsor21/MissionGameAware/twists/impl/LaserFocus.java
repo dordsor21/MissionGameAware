@@ -3,6 +3,7 @@ package me.dordsor21.MissionGameAware.twists.impl;
 import me.dordsor21.MissionGameAware.MissionGameAware;
 import me.dordsor21.MissionGameAware.twists.MeanTwist;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -21,7 +22,8 @@ public class LaserFocus extends MeanTwist {
         Bukkit.getScheduler().runTaskLater(MissionGameAware.plugin, this::complete, 400L);
         final HashMap<UUID, BlockStareEntry> stareMap = new HashMap<>();
         for (Player p : Bukkit.getOnlinePlayers()) {
-            p.sendTitle("§4Laser Focus", "§fDon't stare at blocks too long...", 0, 70, 20);
+            p.sendTitle(ChatColor.translateAlternateColorCodes('&', "&4Laser Focus"),
+                ChatColor.translateAlternateColorCodes('&', "&fDon't stare at blocks too long..."), 0, 70, 20);
             RayTraceResult r = p.rayTraceBlocks(100d, FluidCollisionMode.SOURCE_ONLY);
             final int x, y, z;
             if (r == null || r.getHitBlock() == null) {
@@ -46,11 +48,11 @@ public class LaserFocus extends MeanTwist {
                     BlockStareEntry e = stareMap.get(p.getUniqueId());
                     e.set(r.getHitBlock().getX(), r.getHitBlock().getY(), r.getHitBlock().getZ());
                     if (e.testTimeStare()) {
-                        r.getHitBlock().setType(Material.AIR);
+                        Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> r.getHitBlock().setType(Material.AIR));
                     }
                 }
                 try {
-                    Thread.sleep(100 - (System.currentTimeMillis() - start));
+                    Thread.sleep(50);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -85,7 +87,7 @@ public class LaserFocus extends MeanTwist {
 
         private boolean testTimeStare() {
             long cur = System.currentTimeMillis();
-            boolean longer = cur - firstStamp > 1000;
+            boolean longer = cur - firstStamp > 200;
             if (longer) {
                 firstStamp = cur;
             }

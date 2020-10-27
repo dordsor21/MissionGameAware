@@ -21,7 +21,7 @@ public class Speed02 extends EvilTwist {
         for (Player p : Bukkit.getOnlinePlayers()) {
             p.setFlySpeed(0.2f * 0.1f);
             p.setWalkSpeed(0.2f * 0.2f);
-            p.playSound(p.getLocation(), Sound.ITEM_ELYTRA_FLYING, SoundCategory.MUSIC, 2.0f, 2.0f);
+            p.playSound(p.getLocation(), Sound.ITEM_ELYTRA_FLYING, 2.0f, 2.0f);
         }
         Bukkit.getPluginManager().registerEvents((listener = new Speed02Listener()), MissionGameAware.plugin);
         Bukkit.getScheduler().runTaskLater(MissionGameAware.plugin, () -> {

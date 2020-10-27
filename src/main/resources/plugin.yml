@@ -1,4 +1,4 @@
-name: AdvSwearBlock
+name: MissionGameAware
 main: me.dordsor21.MissionGameAware.MissionGameAware
 version: 1.0
 api-version: 1.16

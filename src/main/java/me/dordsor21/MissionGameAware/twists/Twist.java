@@ -13,7 +13,8 @@ public abstract class Twist implements AutoCloseable {
 
     public void complete() {
         complete = true;
-        MissionGameAware.plugin.getTwistLocks().notify(getType());
+        MissionGameAware.plugin.getLogger().info(getTwistName() + " complete.");
+        MissionGameAware.plugin.getTwistLocks().notifyTwistEnd(this instanceof SoleTwist);
     }
 
     public abstract void start();

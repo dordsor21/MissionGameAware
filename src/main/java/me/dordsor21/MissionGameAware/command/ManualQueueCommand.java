@@ -28,6 +28,8 @@ public class ManualQueueCommand implements CommandExecutor {
             return true;
         }
         MissionGameAware.plugin.getTwistLocks().queueTwist(twist);
+        sender.sendMessage("Twist " + tw + " queued");
+
         return true;
     }
 }
