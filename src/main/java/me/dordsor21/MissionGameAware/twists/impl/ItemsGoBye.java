@@ -43,6 +43,9 @@ public class ItemsGoBye extends WeirdTwist implements SoleTwist {
 
         @EventHandler
         public void onInventoryThing(PlayerItemHeldEvent e) {
+            if (Math.random() < 0.1) {
+                return;
+            }
             final int currentSlot = e.getNewSlot();
             final Player p = e.getPlayer();
             ItemStack[] contents = p.getInventory().getContents();
