@@ -3,6 +3,9 @@ package me.dordsor21.MissionGameAware.twists.WhatSimonSays;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class LookNESW implements WhatSimonSays {
 
     final private Direction dir;
@@ -20,32 +23,45 @@ public class LookNESW implements WhatSimonSays {
     public Thread doIt(boolean value) {
         return new Thread(() -> {
             try {
-                Thread.sleep(3000L);
+                Thread.sleep(6000L);
+                List<Player> fail = new ArrayList<>();
+                List<Player> pass = new ArrayList<>();
                 for (Player p : Bukkit.getOnlinePlayers()) {
                     float yaw = p.getLocation().getYaw();
                     switch (dir) {
                         case NORTH:
+                            System.out.println(p.getLocation().getYaw());
                             if (yaw <= 225 && yaw > 135 != value) {
-                                funBox(p);
+                                fail.add(p);
+                            } else {
+                                pass.add(p);
                             }
                             return;
                         case EAST:
                             if (yaw <= 315 && yaw > 225 != value) {
-                                funBox(p);
+                                fail.add(p);
+                            } else {
+                                pass.add(p);
                             }
                             return;
                         case SOUTH:
                             if (yaw <= 45 && yaw > 315 != value) {
-                                funBox(p);
+                                fail.add(p);
+                            } else {
+                                pass.add(p);
                             }
                             return;
                         case WEST:
                             if (yaw <= 135 && yaw > 45 != value) {
-                                funBox(p);
+                                fail.add(p);
+                            } else {
+                                pass.add(p);
                             }
                             return;
                     }
                 }
+                funBox(fail);
+                good(pass);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

@@ -33,7 +33,7 @@ public class PlaceBlock implements WhatSimonSays {
 
     @Override
     public String getMessage() {
-        return "Quick... place some " + block.name().toLowerCase() + "!";
+        return "Quick... place some " + block.name().toLowerCase().replace('_', ' ') + "!";
     }
 
     @Override
@@ -41,7 +41,8 @@ public class PlaceBlock implements WhatSimonSays {
         return new Thread(() -> {
             try {
                 PlaceBlockListener listener = new PlaceBlockListener(block);
-                Thread.sleep(3000L);
+                Bukkit.getPluginManager().registerEvents(listener, MissionGameAware.plugin);
+                Thread.sleep(5000L);
                 Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
                     for (Player p : Bukkit.getOnlinePlayers()) {
                         p.sendTitle(ChatColor.translateAlternateColorCodes('&', "&l3"), "", 5, 10, 5);
@@ -61,13 +62,7 @@ public class PlaceBlock implements WhatSimonSays {
                 });
                 Thread.sleep(1000L);
                 HandlerList.unregisterAll(listener);
-                Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
-                    for (Player p : Bukkit.getOnlinePlayers()) {
-                        if (playersWhoPlaced.contains(p) != value) {
-                            funBox(p);
-                        }
-                    }
-                });
+                checkListAgainstShouldContain(playersWhoPlaced, value);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

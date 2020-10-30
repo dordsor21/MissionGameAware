@@ -12,4 +12,8 @@ public class ChallengeHandler {
     public void setType(Challenge.Type type) {
         this.type = type;
     }
+
+    public void start(Challenge challenge) {
+        this.setType(challenge.getType());
+    }
 }

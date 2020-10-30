@@ -2,6 +2,7 @@ package me.dordsor21.MissionGameAware.twists.impl;
 
 import me.dordsor21.MissionGameAware.MissionGameAware;
 import me.dordsor21.MissionGameAware.twists.SoleTwist;
+import me.dordsor21.MissionGameAware.twists.Twist;
 import me.dordsor21.MissionGameAware.twists.WeirdTwist;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -22,7 +23,7 @@ public class Bees extends WeirdTwist implements SoleTwist {
     @Override
     public void start() {
         t = new Thread(() -> {
-            try {
+            try (Twist twist = Bees.this) {
                 for (Player p : Bukkit.getOnlinePlayers()) {
                     p.playSound(p.getLocation(), Sound.ENTITY_BEE_LOOP, 1.0f, 0.2f);
                     p.playSound(p.getLocation(), Sound.ENTITY_BEE_LOOP_AGGRESSIVE, 1.0f, 0.2f);

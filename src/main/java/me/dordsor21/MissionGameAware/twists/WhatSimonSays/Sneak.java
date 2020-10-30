@@ -3,22 +3,31 @@ package me.dordsor21.MissionGameAware.twists.WhatSimonSays;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-public class FlyUp implements WhatSimonSays {
+import java.util.ArrayList;
+
+public class Sneak implements WhatSimonSays {
+
     @Override
     public String getMessage() {
-        return "Fly up!";
+        return "Sneak!";
     }
 
     @Override
     public Thread doIt(boolean value) {
         return new Thread(() -> {
             try {
-                Thread.sleep(500L);
+                ArrayList<Player> pass = new ArrayList<>();
+                ArrayList<Player> fail = new ArrayList<>();
+                Thread.sleep(2500L);
                 for (Player p : Bukkit.getOnlinePlayers()) {
-                    if (p.getVelocity().getY() > 0 != value) {
-                        funBox(p);
+                    if (p.isSneaking() == value) {
+                        pass.add(p);
+                    } else {
+                        fail.add(p);
                     }
                 }
+                funBox(fail);
+                good(pass);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

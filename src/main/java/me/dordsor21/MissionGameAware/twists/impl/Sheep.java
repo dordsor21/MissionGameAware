@@ -89,6 +89,7 @@ public class Sheep extends WeirdTwist implements SoleTwist {
                         }
                     }, 1);
                 }
+                this.complete();
 
             } catch (InterruptedException e) {
                 e.printStackTrace();

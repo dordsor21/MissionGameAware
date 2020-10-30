@@ -5,7 +5,7 @@ import me.dordsor21.MissionGameAware.twists.EvilTwist;
 import me.dordsor21.MissionGameAware.twists.SoleTwist;
 import me.dordsor21.MissionGameAware.twists.WhatSimonSays.ChangeDoWhatSimonSays;
 import me.dordsor21.MissionGameAware.twists.WhatSimonSays.FlyNESW;
-import me.dordsor21.MissionGameAware.twists.WhatSimonSays.FlyUp;
+import me.dordsor21.MissionGameAware.twists.WhatSimonSays.Jump;
 import me.dordsor21.MissionGameAware.twists.WhatSimonSays.HoldItem;
 import me.dordsor21.MissionGameAware.twists.WhatSimonSays.LookDown;
 import me.dordsor21.MissionGameAware.twists.WhatSimonSays.LookNESW;
@@ -25,10 +25,12 @@ import java.util.function.Supplier;
 public class SimonSaysFunBoxTime extends EvilTwist implements SoleTwist {
 
     private static final List<Supplier<WhatSimonSays>> whatSimonsSayses = Arrays
-        .asList(FlyUp::new, FlyNESW::new, FlyUp::new, LookDown::new, LookNESW::new, LookUp::new, PlaceBlock::new, HoldItem::new,
+        .asList(Jump::new, FlyNESW::new, Jump::new, LookDown::new, LookNESW::new, LookUp::new, PlaceBlock::new, HoldItem::new,
             ChangeDoWhatSimonSays::new);
     private boolean doWhatSimonSays = true;
-    private BukkitTask t = null;
+    private SimonSaysTimer t = null;
+    private BukkitTask r = null;
+    private boolean cancelled = false;
 
     @Override
     public void start() {
@@ -36,7 +38,8 @@ public class SimonSaysFunBoxTime extends EvilTwist implements SoleTwist {
             p.sendTitle(ChatColor.translateAlternateColorCodes('&', "Simon says it's... &5&lFUNBOX TIME"),
                 ChatColor.translateAlternateColorCodes('&', "Do what Simon says or meet the &5&lFUNBOX!"), 0, 40, 10);
         }
-        t = Bukkit.getScheduler().runTaskAsynchronously(MissionGameAware.plugin, new SimonSaysTimer(doWhatSimonSays, SimonSaysFunBoxTime.this));
+        t = new SimonSaysTimer(doWhatSimonSays, SimonSaysFunBoxTime.this);
+        r = Bukkit.getScheduler().runTaskLaterAsynchronously(MissionGameAware.plugin, t, 5 * 20L);
         Bukkit.getScheduler().runTaskLater(MissionGameAware.plugin, this::complete, 60 * 20L);
     }
 
@@ -45,6 +48,7 @@ public class SimonSaysFunBoxTime extends EvilTwist implements SoleTwist {
         if (t != null) {
             t.cancel();
         }
+        cancelled = true;
         super.cancel();
     }
 
@@ -64,7 +68,11 @@ public class SimonSaysFunBoxTime extends EvilTwist implements SoleTwist {
         return doWhatSimonSays;
     }
 
-    private void setTask(BukkitTask t) {
+    private void setTask(SimonSaysTimer t) {
+        if (cancelled) {
+            t.cancel();
+            return;
+        }
         this.t = t;
     }
 
@@ -73,30 +81,69 @@ public class SimonSaysFunBoxTime extends EvilTwist implements SoleTwist {
         private static final String prefix = ChatColor.translateAlternateColorCodes('&', "&4Simon says: &f");
         private final SimonSaysFunBoxTime twist;
         private final boolean doWhatSimonSays;
+        private Thread t;
+        private boolean cancelled = false;
 
         public SimonSaysTimer(boolean doWhatSimonSays, SimonSaysFunBoxTime twist) {
             this.twist = twist;
             this.doWhatSimonSays = doWhatSimonSays;
         }
 
+        private void cancel() {
+            if (t != null) {
+                t.stop();
+            }
+            cancelled = true;
+        }
+
         @Override
         public void run() {
-            WhatSimonSays whatSimonSays = whatSimonsSayses.get((int) Math.floor(Math.random() * whatSimonsSayses.size())).get();
+            final WhatSimonSays whatSimonSays = whatSimonsSayses.get((int) Math.floor(Math.random() * whatSimonsSayses.size())).get();
+            if (cancelled) {
+                return;
+            }
             if (whatSimonSays instanceof ChangeDoWhatSimonSays) {
+                Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
+                    if (doWhatSimonSays) {
+                        for (Player p : Bukkit.getOnlinePlayers()) {
+                            p.sendTitle(ChatColor.translateAlternateColorCodes('&', "&4Simon says: &fDon't do what he says!"), "", 0, 40, 10);
+                        }
+                    } else {
+                        for (Player p : Bukkit.getOnlinePlayers()) {
+                            p.sendTitle("Do what Simon says!", "", 0, 40, 10);
+                        }
+                    }
+                });
                 twist.setShouldDoSimonSaying(!doWhatSimonSays);
+                if (!cancelled) {
+                    SimonSaysTimer timer = new SimonSaysTimer(twist.shouldDoWhatSimonSays(), twist);
+                    twist.setTask(timer);
+                    Bukkit.getScheduler()
+                        .runTaskLaterAsynchronously(MissionGameAware.plugin, timer, (5 + (long) Math.floor(Math.random() * 5)) * 20L);
+                }
                 return;
             }
             final boolean doWhatMessageSays = Math.random() > 0.5;
             Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
                 for (Player p : Bukkit.getOnlinePlayers()) {
-                    p.sendTitle(doWhatMessageSays == doWhatSimonSays ? prefix : "" + whatSimonSays.getMessage(), "", 0, 40, 10);
+                    p.sendTitle((doWhatMessageSays == doWhatSimonSays ? prefix : "") + whatSimonSays.getMessage(), "", 0, 40, 10);
                     p.playSound(p.getEyeLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f);
                 }
             });
-            whatSimonSays.doIt(doWhatMessageSays);
-            twist.setTask(Bukkit.getScheduler()
-                .runTaskLaterAsynchronously(MissionGameAware.plugin, new SimonSaysTimer(twist.shouldDoWhatSimonSays(), twist),
-                    5 * 20L + (long) Math.floor(Math.random() * 10)));
+            t = whatSimonSays.doIt(doWhatMessageSays);
+            t.start();
+            try {
+                t.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                if (!cancelled) {
+                    SimonSaysTimer timer = new SimonSaysTimer(twist.shouldDoWhatSimonSays(), twist);
+                    twist.setTask(timer);
+                    Bukkit.getScheduler()
+                        .runTaskLaterAsynchronously(MissionGameAware.plugin, timer, (2 + (long) Math.floor(Math.random() * 5)) * 20L);
+                }
+            }
         }
     }
 }

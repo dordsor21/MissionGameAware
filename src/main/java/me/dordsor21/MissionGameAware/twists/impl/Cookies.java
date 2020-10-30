@@ -31,6 +31,6 @@ public class Cookies extends MeanTwist {
             }
             p.getInventory().setStorageContents(storageContents);
         }
-        complete();
+        this.complete();
     }
 }

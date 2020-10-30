@@ -6,6 +6,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class HoldItem implements WhatSimonSays {
@@ -17,7 +19,7 @@ public class HoldItem implements WhatSimonSays {
         Random r = new Random();
         int i = r.nextInt(mats.length);
         Material mat = mats[i];
-        while (mat.isAir() || !mat.isBlock()) {
+        while (mat.isAir() || !mat.isItem()m  ) {
             i = r.nextInt(mats.length);
             mat = mats[i];
         }
@@ -26,14 +28,14 @@ public class HoldItem implements WhatSimonSays {
 
     @Override
     public String getMessage() {
-        return "Quick... hold some " + item.name().toLowerCase() + "!";
+        return "Quick... hold some " + item.name().toLowerCase().replace('_', ' ') + "!";
     }
 
     @Override
     public Thread doIt(final boolean value) {
         return new Thread(() -> {
             try {
-                Thread.sleep(3000L);
+                Thread.sleep(5000L);
                 Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
                     for (Player p : Bukkit.getOnlinePlayers()) {
                         p.sendTitle(ChatColor.translateAlternateColorCodes('&', "&l3"), "", 5, 10, 5);
@@ -52,13 +54,17 @@ public class HoldItem implements WhatSimonSays {
                     }
                 });
                 Thread.sleep(1000L);
-                Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
-                    for (Player p : Bukkit.getOnlinePlayers()) {
-                        if (p.getInventory().getItemInMainHand().getType() != item && p.getInventory().getItemInOffHand().getType() != item) {
-                            funBox(p);
-                        }
+                List<Player> fail = new ArrayList<>();
+                List<Player> pass = new ArrayList<>();
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    if ((p.getInventory().getItemInMainHand().getType() == item || p.getInventory().getItemInOffHand().getType() == item) != value) {
+                        fail.add(p);
+                    } else {
+                        pass.add(p);
                     }
-                });
+                }
+                funBox(fail);
+                good(pass);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

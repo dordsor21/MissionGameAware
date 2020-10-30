@@ -18,7 +18,8 @@ public class Speed02 extends EvilTwist {
 
     @Override
     public void start() {
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "perms group group set byteutil.speeder false");
+        Bukkit.getScheduler().runTask(MissionGameAware.plugin,
+            () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "perms group group set byteutil.speeder false"));
         for (Player p : Bukkit.getOnlinePlayers()) {
             p.setFlySpeed(0.2f * 0.1f);
             p.setWalkSpeed(0.2f * 0.2f);

@@ -1,11 +1,21 @@
 package me.dordsor21.MissionGameAware.twists.WhatSimonSays;
 
+import me.dordsor21.MissionGameAware.MissionGameAware;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerMoveEvent;
+
+import java.util.LinkedList;
 
 public class FlyNESW implements WhatSimonSays {
 
-    final private Direction dir;
+    private static final LinkedList<Player> playersWhoDid = new LinkedList<>();
+
+    private final Direction dir;
 
     public FlyNESW() {
         this.dir = Direction.of((int) Math.floor(Math.random() * 4));
@@ -20,31 +30,11 @@ public class FlyNESW implements WhatSimonSays {
     public Thread doIt(boolean value) {
         return new Thread(() -> {
             try {
-                Thread.sleep(3000L);
-                for (Player p : Bukkit.getOnlinePlayers()) {
-                    switch (dir) {
-                        case NORTH:
-                            if (p.getVelocity().getZ() < 0 != value) {
-                                funBox(p);
-                            }
-                            return;
-                        case EAST:
-                            if (p.getVelocity().getX() > 0 != value) {
-                                funBox(p);
-                            }
-                            return;
-                        case SOUTH:
-                            if (p.getVelocity().getZ() > 0 != value) {
-                                funBox(p);
-                            }
-                            return;
-                        case WEST:
-                            if (p.getVelocity().getX() < 0 != value) {
-                                funBox(p);
-                            }
-                            return;
-                    }
-                }
+                Listener listener = new FlyNESWListener(dir);
+                Bukkit.getPluginManager().registerEvents(listener, MissionGameAware.plugin);
+                Thread.sleep(4500L);
+                HandlerList.unregisterAll(listener);
+                checkListAgainstShouldContain(playersWhoDid, value);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -65,6 +55,51 @@ public class FlyNESW implements WhatSimonSays {
                 case 0:
                 default:
                     return Direction.NORTH;
+            }
+        }
+    }
+
+
+    private static final class FlyNESWListener implements Listener {
+
+        private final Direction dir;
+
+        private FlyNESWListener(Direction dir) {
+            this.dir = dir;
+        }
+
+        @EventHandler
+        public void moveEvent(PlayerMoveEvent e) {
+            Location l1 = e.getFrom();
+            Location l2 = e.getTo();
+            switch (dir) {
+                case NORTH:
+                    if (l2 != null && l2.getZ() < l1.getZ()) {
+                        playersWhoDid.add(e.getPlayer());
+                    } else {
+                        playersWhoDid.remove(e.getPlayer());
+                    }
+                    return;
+                case EAST:
+                    if (l2 != null && l2.getX() > l1.getX()) {
+                        playersWhoDid.add(e.getPlayer());
+                    } else {
+                        playersWhoDid.remove(e.getPlayer());
+                    }
+                    return;
+                case SOUTH:
+                    if (l2 != null && l2.getZ() > l1.getZ()) {
+                        playersWhoDid.add(e.getPlayer());
+                    } else {
+                        playersWhoDid.remove(e.getPlayer());
+                    }
+                    return;
+                case WEST:
+                    if (l2 != null && l2.getX() < l1.getX()) {
+                        playersWhoDid.add(e.getPlayer());
+                    } else {
+                        playersWhoDid.remove(e.getPlayer());
+                    }
             }
         }
     }

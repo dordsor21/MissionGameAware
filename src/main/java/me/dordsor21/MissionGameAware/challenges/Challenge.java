@@ -25,6 +25,6 @@ public abstract class Challenge {
     }
 
     public enum Type {
-        PARKOUR;
+        PARKOR, BUILD;
     }
 }
