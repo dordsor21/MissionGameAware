@@ -10,12 +10,12 @@ public class LookUp implements WhatSimonSays {
     }
 
     @Override
-    public Thread doIt(boolean isSimonSaying) {
+    public Thread doIt(boolean value) {
         return new Thread(() -> {
             try {
                 Thread.sleep(500L);
                 for (Player p : Bukkit.getOnlinePlayers()) {
-                    if (p.getLocation().getPitch() > 50 != isSimonSaying) {
+                    if (p.getLocation().getPitch() > 50 != value) {
                         funBox(p);
                     }
                 }

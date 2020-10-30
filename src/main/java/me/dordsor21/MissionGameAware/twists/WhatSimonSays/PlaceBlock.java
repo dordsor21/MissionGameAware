@@ -37,7 +37,7 @@ public class PlaceBlock implements WhatSimonSays {
     }
 
     @Override
-    public Thread doIt(final boolean isSimonSaying) {
+    public Thread doIt(final boolean value) {
         return new Thread(() -> {
             try {
                 PlaceBlockListener listener = new PlaceBlockListener(block);
@@ -63,7 +63,7 @@ public class PlaceBlock implements WhatSimonSays {
                 HandlerList.unregisterAll(listener);
                 Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
                     for (Player p : Bukkit.getOnlinePlayers()) {
-                        if (playersWhoPlaced.contains(p) != isSimonSaying) {
+                        if (playersWhoPlaced.contains(p) != value) {
                             funBox(p);
                         }
                     }

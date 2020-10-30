@@ -17,7 +17,7 @@ public class LookNESW implements WhatSimonSays {
     }
 
     @Override
-    public Thread doIt(boolean isSimonSaying) {
+    public Thread doIt(boolean value) {
         return new Thread(() -> {
             try {
                 Thread.sleep(3000L);
@@ -25,22 +25,22 @@ public class LookNESW implements WhatSimonSays {
                     float yaw = p.getLocation().getYaw();
                     switch (dir) {
                         case NORTH:
-                            if (yaw <= 225 && yaw > 135 != isSimonSaying) {
+                            if (yaw <= 225 && yaw > 135 != value) {
                                 funBox(p);
                             }
                             return;
                         case EAST:
-                            if (yaw <= 315 && yaw > 225 != isSimonSaying) {
+                            if (yaw <= 315 && yaw > 225 != value) {
                                 funBox(p);
                             }
                             return;
                         case SOUTH:
-                            if (yaw <= 45 && yaw > 315 != isSimonSaying) {
+                            if (yaw <= 45 && yaw > 315 != value) {
                                 funBox(p);
                             }
                             return;
                         case WEST:
-                            if (yaw <= 135 && yaw > 45 != isSimonSaying) {
+                            if (yaw <= 135 && yaw > 45 != value) {
                                 funBox(p);
                             }
                             return;

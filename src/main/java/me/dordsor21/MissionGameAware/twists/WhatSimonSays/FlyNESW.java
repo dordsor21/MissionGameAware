@@ -17,29 +17,29 @@ public class FlyNESW implements WhatSimonSays {
     }
 
     @Override
-    public Thread doIt(boolean isSimonSaying) {
+    public Thread doIt(boolean value) {
         return new Thread(() -> {
             try {
                 Thread.sleep(3000L);
                 for (Player p : Bukkit.getOnlinePlayers()) {
                     switch (dir) {
                         case NORTH:
-                            if (p.getVelocity().getZ() < 0 != isSimonSaying) {
+                            if (p.getVelocity().getZ() < 0 != value) {
                                 funBox(p);
                             }
                             return;
                         case EAST:
-                            if (p.getVelocity().getX() > 0 != isSimonSaying) {
+                            if (p.getVelocity().getX() > 0 != value) {
                                 funBox(p);
                             }
                             return;
                         case SOUTH:
-                            if (p.getVelocity().getZ() > 0 != isSimonSaying) {
+                            if (p.getVelocity().getZ() > 0 != value) {
                                 funBox(p);
                             }
                             return;
                         case WEST:
-                            if (p.getVelocity().getX() < 0 != isSimonSaying) {
+                            if (p.getVelocity().getX() < 0 != value) {
                                 funBox(p);
                             }
                             return;

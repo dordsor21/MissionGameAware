@@ -5,7 +5,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.HandlerList;
 
 import java.util.Random;
 
@@ -31,7 +30,7 @@ public class HoldItem implements WhatSimonSays {
     }
 
     @Override
-    public Thread doIt(final boolean isSimonSaying) {
+    public Thread doIt(final boolean value) {
         return new Thread(() -> {
             try {
                 Thread.sleep(3000L);

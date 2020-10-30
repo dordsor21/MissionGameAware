@@ -10,12 +10,12 @@ public class FlyDown implements WhatSimonSays {
     }
 
     @Override
-    public Thread doIt(boolean isSimonSaying) {
+    public Thread doIt(boolean value) {
         return new Thread(() -> {
             try {
                 Thread.sleep(500L);
                 for (Player p : Bukkit.getOnlinePlayers()) {
-                    if (p.getVelocity().getY() < 0 != isSimonSaying) {
+                    if (p.getVelocity().getY() < 0 != value) {
                         funBox(p);
                     }
                 }
