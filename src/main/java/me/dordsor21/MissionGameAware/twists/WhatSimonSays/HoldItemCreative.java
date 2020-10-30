@@ -5,30 +5,25 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class HoldItem implements WhatSimonSays {
+public class HoldItemCreative implements WhatSimonSays {
 
     private final Material item;
-    private final Material[] list = new Material[9];
 
-    public HoldItem() {
+    public HoldItemCreative() {
         Material[] mats = Material.values();
         Random r = new Random();
         int i = r.nextInt(mats.length);
-        for (int n = 0; n < 9; n++) {
-            Material mat = mats[i];
-            while (mat.isAir() || !mat.isItem()) {
-                i = r.nextInt(mats.length);
-                mat = mats[i];
-            }
-            list[n] = mat;
+        Material mat = mats[i];
+        while (mat.isAir() || !mat.isItem()) {
+            i = r.nextInt(mats.length);
+            mat = mats[i];
         }
-        this.item = list[(int) Math.floor(Math.random() * 9)];
+        this.item = mat;
     }
 
     @Override
@@ -40,15 +35,6 @@ public class HoldItem implements WhatSimonSays {
     public Thread doIt(final boolean value) {
         return new Thread(() -> {
             try {
-                Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
-                    for (Player p : Bukkit.getOnlinePlayers()) {
-                        ItemStack[] items = p.getInventory().getContents();
-                        for (int i = 0; i < 9; i++) {
-                            items[i] = new ItemStack(list[i]);
-                        }
-                        p.getInventory().setContents(items);
-                    }
-                });
                 Thread.sleep(5000L);
                 Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
                     for (Player p : Bukkit.getOnlinePlayers()) {
