@@ -6,6 +6,7 @@ import me.dordsor21.MissionGameAware.twists.NiceTwist;
 import me.dordsor21.MissionGameAware.twists.SoleTwist;
 import me.dordsor21.MissionGameAware.twists.Twist;
 import me.dordsor21.MissionGameAware.twists.WeirdTwist;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -95,6 +96,21 @@ public class TwistLocks {
             runningTwists++;
         }
         return true;
+    }
+
+    public void escapePlayer(Player p) {
+        if (niceTwist != null && !niceTwist.isComplete()) {
+            niceTwist.escapePlayer(p);
+        }
+        if (meanTwist != null && !meanTwist.isComplete()) {
+            meanTwist.escapePlayer(p);
+        }
+        if (evilTwist != null && !evilTwist.isComplete()) {
+            evilTwist.escapePlayer(p);
+        }
+        if (weirdTwist != null && !weirdTwist.isComplete()) {
+            weirdTwist.escapePlayer(p);
+        }
     }
 
     public synchronized void notifyTwistEnd(boolean isSole, boolean decrRunning) {

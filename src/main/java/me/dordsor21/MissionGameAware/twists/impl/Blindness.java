@@ -8,12 +8,23 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Blindness extends MeanTwist {
 
+    private static final List<Player> escaped = new ArrayList<>();
     private Thread t = null;
 
     @Override
+    public void escapePlayer(Player p) {
+        escaped.add(p);
+        p.removePotionEffect(PotionEffectType.BLINDNESS);
+    }
+
+    @Override
     public void start() {
+        escaped.clear();
         t = new Thread(() -> {
             try (final Twist twist = Blindness.this) {
                 for (int i = 0; i < 1; i++) {
@@ -33,6 +44,7 @@ public class Blindness extends MeanTwist {
 
     @Override
     public void cancel() {
+        escaped.clear();
         if (t != null) {
             t.stop();
         }
@@ -42,12 +54,18 @@ public class Blindness extends MeanTwist {
     private void blindAll() throws InterruptedException {
         Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
             for (Player p : Bukkit.getOnlinePlayers()) {
+                if (escaped.contains(p)) {
+                    continue;
+                }
                 p.addPotionEffect(PotionEffectType.BLINDNESS.createEffect(21, 10));
                 p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_LAND, 2f, 2.0f);
             }
         });
         Thread.sleep(100L);
         for (Player p : Bukkit.getOnlinePlayers()) {
+            if (escaped.contains(p)) {
+                continue;
+            }
             p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_LAND, 2f, 2.0f);
         }
     }

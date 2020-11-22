@@ -1,5 +1,6 @@
 package me.dordsor21.MissionGameAware.twists.WhatSimonSays;
 
+import me.dordsor21.MissionGameAware.twists.impl.SimonSaysFunBoxTime;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -20,6 +21,9 @@ public class Sneak implements WhatSimonSays {
                 ArrayList<Player> fail = new ArrayList<>();
                 Thread.sleep(2500L);
                 for (Player p : Bukkit.getOnlinePlayers()) {
+                    if (SimonSaysFunBoxTime.escaped.contains(p)) {
+                        continue;
+                    }
                     if (p.isSneaking() == value) {
                         pass.add(p);
                     } else {

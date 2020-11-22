@@ -1,5 +1,6 @@
 package me.dordsor21.MissionGameAware.twists.WhatSimonSays;
 
+import me.dordsor21.MissionGameAware.twists.impl.SimonSaysFunBoxTime;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -20,6 +21,9 @@ public class LookUp implements WhatSimonSays {
                 List<Player> fail = new ArrayList<>();
                 List<Player> pass = new ArrayList<>();
                 for (Player p : Bukkit.getOnlinePlayers()) {
+                    if (SimonSaysFunBoxTime.escaped.contains(p)) {
+                        continue;
+                    }
                     System.out.println(p.getLocation().getPitch());
                     if (p.getLocation().getPitch() < -50 != value) {
                         fail.add(p);

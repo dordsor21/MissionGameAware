@@ -1,5 +1,6 @@
 package me.dordsor21.MissionGameAware.twists.WhatSimonSays;
 
+import me.dordsor21.MissionGameAware.twists.impl.SimonSaysFunBoxTime;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -19,30 +20,45 @@ public class Jump implements WhatSimonSays {
                 LinkedList<Player> pass = new LinkedList<>();
                 Thread.sleep(500L);
                 for (Player p : Bukkit.getOnlinePlayers()) {
+                    if (SimonSaysFunBoxTime.escaped.contains(p)) {
+                        continue;
+                    }
                     if (!p.isOnGround()) {
                         pass.add(p);
                     }
                 }
                 Thread.sleep(300L);
                 for (Player p : Bukkit.getOnlinePlayers()) {
+                    if (SimonSaysFunBoxTime.escaped.contains(p)) {
+                        continue;
+                    }
                     if (!p.isOnGround()) {
                         pass.add(p);
                     }
                 }
                 Thread.sleep(200L);
                 for (Player p : Bukkit.getOnlinePlayers()) {
+                    if (SimonSaysFunBoxTime.escaped.contains(p)) {
+                        continue;
+                    }
                     if (!p.isOnGround()) {
                         pass.add(p);
                     }
                 }
                 Thread.sleep(400L);
                 for (Player p : Bukkit.getOnlinePlayers()) {
+                    if (SimonSaysFunBoxTime.escaped.contains(p)) {
+                        continue;
+                    }
                     if (!p.isOnGround()) {
                         pass.add(p);
                     }
                 }
                 Thread.sleep(200L);
                 for (Player p : Bukkit.getOnlinePlayers()) {
+                    if (SimonSaysFunBoxTime.escaped.contains(p)) {
+                        continue;
+                    }
                     if (!p.isOnGround()) {
                         pass.add(p);
                     }

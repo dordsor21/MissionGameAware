@@ -1,5 +1,7 @@
 package me.dordsor21.MissionGameAware.twists;
 
+import org.bukkit.entity.Player;
+
 public abstract class MeanTwist extends Twist {
 
     @Override
@@ -14,6 +16,11 @@ public abstract class MeanTwist extends Twist {
 
         @Override
         public void cancel() {
+        }
+
+        @Override
+        public void escapePlayer(Player p) {
+
         }
 
         @Override

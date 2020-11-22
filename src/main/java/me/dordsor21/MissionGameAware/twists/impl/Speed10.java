@@ -11,10 +11,22 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Speed10 extends EvilTwist {
+
+    private static final List<Player> escaped = new ArrayList<>();
 
     private Speed10Listener listener;
     private BukkitTask r = null;
+
+    @Override
+    public void escapePlayer(Player p) {
+        p.setFlySpeed(0.1f);
+        p.setWalkSpeed(0.2f);
+        escaped.add(p);
+    }
 
     private static float getRealMoveSpeed(final boolean isFly) {
         final float defaultSpeed = isFly ? 0.1f : 0.2f;
@@ -26,6 +38,7 @@ public class Speed10 extends EvilTwist {
 
     @Override
     public void start() {
+        escaped.clear();
         Bukkit.getScheduler().runTask(MissionGameAware.plugin,
             () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "perms group group set byteutil.speeder false"));
         for (Player p : Bukkit.getOnlinePlayers()) {
@@ -46,12 +59,14 @@ public class Speed10 extends EvilTwist {
 
     @Override
     public void complete() {
+        escaped.clear();
         HandlerList.unregisterAll(listener);
         super.complete();
     }
 
     @Override
     public void cancel() {
+        escaped.clear();
         HandlerList.unregisterAll(listener);
         if (r != null) {
             r.cancel();
@@ -62,6 +77,9 @@ public class Speed10 extends EvilTwist {
     private static final class Speed10Listener implements Listener {
         @EventHandler
         public void onPlayerJoin(PlayerJoinEvent e) {
+            if (escaped.contains(e.getPlayer())) {
+                return;
+            }
             Player p = e.getPlayer();
             p.setFlySpeed(getRealMoveSpeed(true));
             p.setWalkSpeed(getRealMoveSpeed(false));

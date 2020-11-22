@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
-public abstract class Challenge {
+public abstract class Challenge implements Runnable {
 
     private String name;
 
@@ -25,6 +25,6 @@ public abstract class Challenge {
     }
 
     public enum Type {
-        PARKOR, BUILD;
+        PARKOUR, BUILD, SURVIVAL
     }
 }

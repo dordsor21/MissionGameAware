@@ -8,6 +8,11 @@ import org.bukkit.inventory.ItemStack;
 
 public class Cookies extends MeanTwist {
     @Override
+    public void escapePlayer(Player p) {
+        //do nothing
+    }
+
+    @Override
     public void start() {
         for (Player p : Bukkit.getOnlinePlayers()) {
             ItemStack[] contents = p.getInventory().getContents();

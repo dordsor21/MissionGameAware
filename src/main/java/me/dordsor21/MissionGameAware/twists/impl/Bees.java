@@ -12,13 +12,26 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Bees extends WeirdTwist implements SoleTwist {
 
     private static final Vector up = new Vector(0, 1, 0);
     private static final Vector halves = new Vector(0.5, 0.5, 0.5);
+    private static final HashMap<Player, List<Bee>> playerbees = new HashMap<>();
     private Thread t = null;
+
+    @Override
+    public void escapePlayer(Player p) {
+        Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
+            for (Bee bee : playerbees.get(p)) {
+                bee.remove();
+            }
+        });
+        playerbees.remove(p);
+    }
 
     @Override
     public void start() {
@@ -39,7 +52,7 @@ public class Bees extends WeirdTwist implements SoleTwist {
                     p.playSound(p.getLocation(), Sound.ENTITY_BEE_LOOP_AGGRESSIVE, 1.0f, 2.0f);
                 }
                 Thread.sleep(850);
-                final List<List<Bee>> beess = new ArrayList<>();
+                playerbees.clear();
                 for (Player p : Bukkit.getOnlinePlayers()) {
                     List<Bee> bees = new ArrayList<>();
                     Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
@@ -50,37 +63,38 @@ public class Bees extends WeirdTwist implements SoleTwist {
                             bees.add(bee);
                         }
                     });
-                    beess.add(bees);
+                    playerbees.put(p, bees);
                 }
                 Thread.sleep(10000);
-                final List<List<Bee>> babies = dupe(beess);
+                dupe();
 
                 Thread.sleep(3000);
-                final List<List<Bee>> babies2 = dupe(babies);
+                dupe();
 
                 Thread.sleep(3000);
-                final List<List<Bee>> babies3 = dupe(babies2);
+                dupe();
 
                 Thread.sleep(3000);
-                final List<List<Bee>> babies4 = dupe(babies3);
+                dupe();
 
                 Thread.sleep(3000);
-                final List<List<Bee>> babies5 = dupe(babies4);
+                dupe();
 
                 Thread.sleep(2000);
-                final List<List<Bee>> babies6 = dupe(babies5);
+                dupe();
 
                 Thread.sleep(1000);
-                final List<List<Bee>> babies7 = dupe(babies6);
+                dupe();
 
                 Thread.sleep(30000);
-                for (List<Bee> bees : babies7) {
+                for (List<Bee> bees : playerbees.values()) {
                     Bukkit.getScheduler().runTaskLater(MissionGameAware.plugin, () -> {
                         for (Bee bee : bees) {
                             bee.remove();
                         }
                     }, 1);
                 }
+                playerbees.clear();
 
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -89,12 +103,11 @@ public class Bees extends WeirdTwist implements SoleTwist {
         t.start();
     }
 
-    private List<List<Bee>> dupe(List<List<Bee>> beess) {
-        List<List<Bee>> babiess = new ArrayList<>();
-        for (List<Bee> bees : beess) {
-            final List<Bee> babies = new ArrayList<>(bees);
+    private void dupe() {
+        for (Map.Entry<Player, List<Bee>> entry : playerbees.entrySet()) {
+            final List<Bee> babies = new ArrayList<>(entry.getValue());
             Bukkit.getScheduler().runTaskLater(MissionGameAware.plugin, () -> {
-                for (Bee bee : bees) {
+                for (Bee bee : entry.getValue()) {
                     if (!bee.isValid() || bee.isDead()) {
                         babies.remove(bee);
                         bee.remove();
@@ -108,13 +121,13 @@ public class Bees extends WeirdTwist implements SoleTwist {
                     babies.add(baby);
                 }
             }, 1L);
-            babiess.add(babies);
+            playerbees.put(entry.getKey(), babies);
         }
-        return babiess;
     }
 
     @Override
     public void cancel() {
+        playerbees.clear();
         if (t != null) {
             t.stop();
         }

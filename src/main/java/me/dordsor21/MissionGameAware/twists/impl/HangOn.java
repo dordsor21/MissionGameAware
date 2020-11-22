@@ -13,6 +13,11 @@ import java.util.Map;
 public class HangOn extends EvilTwist {
 
     @Override
+    public void escapePlayer(Player p) {
+        //do nothing
+    }
+
+    @Override
     public void start() {
         Map<Player, Location> locs = new HashMap<>();
         for (Player p : Bukkit.getOnlinePlayers()) {

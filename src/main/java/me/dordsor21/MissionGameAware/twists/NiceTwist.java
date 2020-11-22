@@ -1,5 +1,7 @@
 package me.dordsor21.MissionGameAware.twists;
 
+import org.bukkit.entity.Player;
+
 public abstract class NiceTwist extends Twist {
 
     @Override
@@ -19,6 +21,11 @@ public abstract class NiceTwist extends Twist {
         @Override
         public boolean isComplete() {
             return true;
+        }
+
+        @Override
+        public void escapePlayer(Player p) {
+
         }
     }
 

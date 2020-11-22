@@ -1,6 +1,7 @@
 package me.dordsor21.MissionGameAware.twists.WhatSimonSays;
 
 import me.dordsor21.MissionGameAware.MissionGameAware;
+import me.dordsor21.MissionGameAware.twists.impl.SimonSaysFunBoxTime;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -42,6 +43,9 @@ public class HoldItem implements WhatSimonSays {
             try {
                 Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
                     for (Player p : Bukkit.getOnlinePlayers()) {
+                        if (SimonSaysFunBoxTime.escaped.contains(p)) {
+                            continue;
+                        }
                         ItemStack[] items = p.getInventory().getContents();
                         for (int i = 0; i < 9; i++) {
                             items[i] = new ItemStack(list[i]);
@@ -52,18 +56,27 @@ public class HoldItem implements WhatSimonSays {
                 Thread.sleep(5000L);
                 Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
                     for (Player p : Bukkit.getOnlinePlayers()) {
+                        if (SimonSaysFunBoxTime.escaped.contains(p)) {
+                            continue;
+                        }
                         p.sendTitle(ChatColor.translateAlternateColorCodes('&', "&l3"), "", 5, 10, 5);
                     }
                 });
                 Thread.sleep(1000L);
                 Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
                     for (Player p : Bukkit.getOnlinePlayers()) {
+                        if (SimonSaysFunBoxTime.escaped.contains(p)) {
+                            continue;
+                        }
                         p.sendTitle(ChatColor.translateAlternateColorCodes('&', "&l2"), "", 5, 10, 5);
                     }
                 });
                 Thread.sleep(1000L);
                 Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
                     for (Player p : Bukkit.getOnlinePlayers()) {
+                        if (SimonSaysFunBoxTime.escaped.contains(p)) {
+                            continue;
+                        }
                         p.sendTitle(ChatColor.translateAlternateColorCodes('&', "&l1"), "", 5, 10, 5);
                     }
                 });
@@ -71,6 +84,9 @@ public class HoldItem implements WhatSimonSays {
                 List<Player> fail = new ArrayList<>();
                 List<Player> pass = new ArrayList<>();
                 for (Player p : Bukkit.getOnlinePlayers()) {
+                    if (SimonSaysFunBoxTime.escaped.contains(p)) {
+                        continue;
+                    }
                     if ((p.getInventory().getItemInMainHand().getType() == item || p.getInventory().getItemInOffHand().getType() == item) != value) {
                         fail.add(p);
                     } else {

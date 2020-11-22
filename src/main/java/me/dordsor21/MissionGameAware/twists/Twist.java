@@ -1,6 +1,7 @@
 package me.dordsor21.MissionGameAware.twists;
 
 import me.dordsor21.MissionGameAware.MissionGameAware;
+import org.bukkit.entity.Player;
 
 public abstract class Twist implements AutoCloseable {
 
@@ -16,6 +17,8 @@ public abstract class Twist implements AutoCloseable {
         MissionGameAware.plugin.getLogger().info(getTwistName() + " complete.");
         MissionGameAware.plugin.getTwistLocks().notifyTwistEnd(this instanceof SoleTwist, true);
     }
+
+    public abstract void escapePlayer(Player p);
 
     public abstract void start();
 

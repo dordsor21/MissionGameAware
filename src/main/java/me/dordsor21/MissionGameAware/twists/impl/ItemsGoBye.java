@@ -39,6 +39,11 @@ public class ItemsGoBye extends WeirdTwist implements SoleTwist {
         super.complete();
     }
 
+    @Override
+    public void escapePlayer(Player p) {
+        //can't do anything LOL
+    }
+
     private static final class ItemsGoByeListener implements Listener {
 
         @EventHandler

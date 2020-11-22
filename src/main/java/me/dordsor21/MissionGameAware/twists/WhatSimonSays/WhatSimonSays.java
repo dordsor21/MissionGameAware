@@ -1,6 +1,7 @@
 package me.dordsor21.MissionGameAware.twists.WhatSimonSays;
 
 import me.dordsor21.MissionGameAware.MissionGameAware;
+import me.dordsor21.MissionGameAware.twists.impl.SimonSaysFunBoxTime;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -17,6 +18,9 @@ public interface WhatSimonSays {
     default void funBox(List<Player> players) {
         Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
             for (Player p : players) {
+                if (SimonSaysFunBoxTime.escaped.contains(p)) {
+                    continue;
+                }
                 p.sendTitle("Failed!", "", 0, 40, 10);
             }
         });
@@ -25,6 +29,9 @@ public interface WhatSimonSays {
     default void good(List<Player> players) {
         Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
             for (Player p : players) {
+                if (SimonSaysFunBoxTime.escaped.contains(p)) {
+                    continue;
+                }
                 p.sendTitle("Passed!", "", 0, 40, 10);
             }
         });
@@ -34,6 +41,9 @@ public interface WhatSimonSays {
         List<Player> fail = new ArrayList<>();
         List<Player> pass = new ArrayList<>();
         for (Player p : Bukkit.getOnlinePlayers()) {
+            if (SimonSaysFunBoxTime.escaped.contains(p)) {
+                continue;
+            }
             if (playersWhoDid.contains(p) != value) {
                 fail.add(p);
             } else {
