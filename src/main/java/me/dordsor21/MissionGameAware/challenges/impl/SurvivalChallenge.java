@@ -2,6 +2,19 @@ package me.dordsor21.MissionGameAware.challenges.impl;
 
 import me.dordsor21.MissionGameAware.MissionGameAware;
 import me.dordsor21.MissionGameAware.challenges.Challenge;
+import me.dordsor21.MissionGameAware.challenges.Survival.SurvChallenge;
+import me.dordsor21.MissionGameAware.challenges.Survival.impl.BedrockHurt;
+import me.dordsor21.MissionGameAware.challenges.Survival.impl.Breed;
+import me.dordsor21.MissionGameAware.challenges.Survival.impl.Burn;
+import me.dordsor21.MissionGameAware.challenges.Survival.impl.CatchFish;
+import me.dordsor21.MissionGameAware.challenges.Survival.impl.FallDeath;
+import me.dordsor21.MissionGameAware.challenges.Survival.impl.GiveItem;
+import me.dordsor21.MissionGameAware.challenges.Survival.impl.GrowFarmFood;
+import me.dordsor21.MissionGameAware.challenges.Survival.impl.GrowTree;
+import me.dordsor21.MissionGameAware.challenges.Survival.impl.KillCommonMob;
+import me.dordsor21.MissionGameAware.challenges.Survival.impl.KillPlayer;
+import me.dordsor21.MissionGameAware.challenges.Survival.impl.KillRareMob;
+import me.dordsor21.MissionGameAware.challenges.Survival.impl.Nether;
 import me.dordsor21.MissionGameAware.twists.Twist;
 import me.dordsor21.MissionGameAware.twists.impl.Bees;
 import me.dordsor21.MissionGameAware.twists.impl.Blindness;
@@ -37,7 +50,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -46,6 +63,7 @@ import java.util.function.Supplier;
 
 public class SurvivalChallenge extends Challenge {
 
+    public static final Map<Player, Integer> playerScores = new ConcurrentHashMap<>();
     private static final List<Supplier<Twist>> twists = Collections.unmodifiableList(Arrays
         .asList(Blindness::new, Bees::new, FakeNuke::new, HangOn::new, ItemsGoBye::new, KittyCannonEract::new,
             LaserFocus::new, Lightning::new, LookDown::new, LookUp::new, Nausea::new, PumpkinHead::new, Sheep::new,
@@ -53,19 +71,21 @@ public class SurvivalChallenge extends Challenge {
     private static final AtomicInteger descrStage = new AtomicInteger(0);
     private static final List<Player> players = new ArrayList<>();
     private static final ArrayList<String> lore = new ArrayList<>();
+    private static final Random rand = new Random();
+    private static final List<Supplier<SurvChallenge>> challengeList = new LinkedList<>(Arrays
+        .asList(BedrockHurt::new, Breed::new, Burn::new, CatchFish::new, FallDeath::new, GiveItem::new, GrowFarmFood::new,
+            GrowTree::new, KillCommonMob::new, KillPlayer::new, KillRareMob::new, Nether::new));
+    private static final Location spawn = new Location(Bukkit.getWorld("world"), 100, 100, 100);
     private static ScheduledFuture<?> descr;
     private static ScheduledFuture<?> challenges;
     private static List<Player> top5 = new ArrayList<>();
     private static Player pvpwinner = null;
     private static PVPListener pvpListener;
-    private static Location spawn = new Location(Bukkit.getWorld("world"), 100, 100, 100);
 
     static {
         lore.add("Throw me to escape a twist!");
         lore.add("Single use only!");
     }
-
-    private long start;
 
     @Override
     public Type getType() {
@@ -77,8 +97,14 @@ public class SurvivalChallenge extends Challenge {
     }
 
     @Override
+    public void stop() {
+        descr.cancel(true);
+        challenges.cancel(true);
+
+    }
+
+    @Override
     public void run() {
-        start = System.currentTimeMillis();
         for (Supplier<Twist> twist : twists) {
             MissionGameAware.plugin.getTwistLocks().queueTwist(twist.get());
         }
@@ -98,7 +124,7 @@ public class SurvivalChallenge extends Challenge {
                         Bukkit.broadcastMessage("Welcome to the Survival Challenge");
                         break;
                     case 1:
-                        Bukkit.broadcastMessage("Message 1");
+                        Bukkit.broadcastMessage("10 Points win. 3 top 5.");
                         break;
                     case 2:
                         Bukkit.broadcastMessage("Message 2");
@@ -159,6 +185,9 @@ public class SurvivalChallenge extends Challenge {
                                     p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&4Battle!"), 0, 70, 20);
                                 }
                                 players.addAll(Bukkit.getOnlinePlayers());
+                                for (Player p : Bukkit.getOnlinePlayers()) {
+                                    playerScores.put(p, 0);
+                                }
                                 Bukkit.getPluginManager()
                                     .registerEvents(pvpListener = new PVPListener(), MissionGameAware.plugin);
                             } catch (InterruptedException e) {
@@ -198,14 +227,31 @@ public class SurvivalChallenge extends Challenge {
                                     .translateAlternateColorCodes('&', "&6Winner! &f Congratulations &5" + pvpwinner.getName()),
                                 0, 70, 20);
                         }
+                    });
+                    try {
+                        Thread.sleep(5000L);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
+                        for (Player p : Bukkit.getOnlinePlayers()) {
+                            p.setGameMode(GameMode.SURVIVAL);
+                            p.teleport(spawn);
+                            p.sendTitle("", ChatColor.translateAlternateColorCodes('&',
+                                "&fTake 5 minutes to explore, and then the challenges begin!"), 0, 70, 20);
+                        }
                         pvpwinner.getInventory().addItem(new ItemStack(Material.TOTEM_OF_UNDYING, 1));
+                        pvpwinner.getInventory().addItem(new ItemStack(Material.DIAMOND, 16));
+                        pvpwinner.getInventory().addItem(new ItemStack(Material.EXPERIENCE_BOTTLE, 32));
                         for (Player p : top5) {
                             ItemStack namedSnowball = new ItemStack(Material.SNOWBALL);
                             ItemMeta meta = namedSnowball.getItemMeta();
                             meta.setDisplayName("Escape a Twist");
                             meta.setLore(lore);
                             namedSnowball.setItemMeta(meta);
-                            pvpwinner.getInventory().addItem(namedSnowball);
+                            p.getInventory().addItem(namedSnowball);
+                            ItemStack diamonds = new ItemStack(Material.DIAMOND, 16);
+                            p.getInventory().addItem(diamonds);
                         }
                     });
                     challenges = Executors.newSingleThreadScheduledExecutor()
@@ -256,7 +302,7 @@ public class SurvivalChallenge extends Challenge {
 
         @Override
         public void run() {
-
+            int i = rand.nextInt(challengeList.size());
         }
     }
 }

@@ -46,6 +46,11 @@ public class BuildChallenge extends Challenge {
         return Type.BUILD;
     }
 
+    @Override
+    public void stop() {
+
+    }
+
     public List<Supplier<Twist>> getTwists() {
         return twists;
     }

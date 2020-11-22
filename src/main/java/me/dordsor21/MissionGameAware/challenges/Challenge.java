@@ -13,6 +13,8 @@ public abstract class Challenge implements Runnable {
 
     public abstract Type getType();
 
+    public abstract void stop();
+
     public List<Supplier<Twist>> getTwists() {
         return Collections.unmodifiableList(new ArrayList<>());
     }

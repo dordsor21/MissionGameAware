@@ -33,9 +33,9 @@ public class Lightning extends WeirdTwist {
             p.getWorld().strikeLightningEffect(p.getLocation());
         }
         r = Bukkit.getScheduler().runTaskLater(MissionGameAware.plugin, this::complete, 30 * 20L);
-        final Random r = new Random();
+        final Random rr = new Random();
         t = Bukkit.getScheduler().runTaskTimer(MissionGameAware.plugin, () -> {
-            Player p = (Player) Bukkit.getOnlinePlayers().toArray()[r.nextInt(Bukkit.getOnlinePlayers().size())];
+            Player p = (Player) Bukkit.getOnlinePlayers().toArray()[rr.nextInt(Bukkit.getOnlinePlayers().size())];
             if (escaped.contains(p)) {
                 return;
             }
