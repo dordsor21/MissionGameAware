@@ -7,13 +7,17 @@ import me.dordsor21.MissionGameAware.challenges.Survival.impl.BedrockHurt;
 import me.dordsor21.MissionGameAware.challenges.Survival.impl.Breed;
 import me.dordsor21.MissionGameAware.challenges.Survival.impl.Burn;
 import me.dordsor21.MissionGameAware.challenges.Survival.impl.CatchFish;
+import me.dordsor21.MissionGameAware.challenges.Survival.impl.ChickenEgg;
+import me.dordsor21.MissionGameAware.challenges.Survival.impl.CraftCake;
 import me.dordsor21.MissionGameAware.challenges.Survival.impl.FallDeath;
 import me.dordsor21.MissionGameAware.challenges.Survival.impl.GiveItem;
 import me.dordsor21.MissionGameAware.challenges.Survival.impl.GrowFarmFood;
 import me.dordsor21.MissionGameAware.challenges.Survival.impl.GrowTree;
+import me.dordsor21.MissionGameAware.challenges.Survival.impl.IronGolem;
 import me.dordsor21.MissionGameAware.challenges.Survival.impl.KillCommonMob;
 import me.dordsor21.MissionGameAware.challenges.Survival.impl.KillPlayer;
 import me.dordsor21.MissionGameAware.challenges.Survival.impl.KillRareMob;
+import me.dordsor21.MissionGameAware.challenges.Survival.impl.MilkCow;
 import me.dordsor21.MissionGameAware.challenges.Survival.impl.Nether;
 import me.dordsor21.MissionGameAware.twists.Twist;
 import me.dordsor21.MissionGameAware.twists.impl.Bees;
@@ -74,7 +78,8 @@ public class SurvivalChallenge extends Challenge {
     private static final Random rand = new Random();
     private static final List<Supplier<SurvChallenge>> challengeList = new LinkedList<>(Arrays
         .asList(BedrockHurt::new, Breed::new, Burn::new, CatchFish::new, FallDeath::new, GiveItem::new, GrowFarmFood::new,
-            GrowTree::new, KillCommonMob::new, KillPlayer::new, KillRareMob::new, Nether::new));
+            GrowTree::new, KillCommonMob::new, KillPlayer::new, KillRareMob::new, Nether::new, ChickenEgg::new,
+            CraftCake::new, IronGolem::new, MilkCow::new));
     private static final Location spawn = new Location(Bukkit.getWorld("world"), 100, 100, 100);
     private static ScheduledFuture<?> descr;
     private static ScheduledFuture<?> challenges;

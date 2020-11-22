@@ -7,9 +7,11 @@ import me.dordsor21.MissionGameAware.util.ChallengeHandler;
 import me.dordsor21.MissionGameAware.util.RandomTwists;
 import me.dordsor21.MissionGameAware.util.TwistLocks;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.VillagerAcquireTradeEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class MissionGameAware extends JavaPlugin implements Listener {
@@ -45,7 +47,18 @@ public class MissionGameAware extends JavaPlugin implements Listener {
     }
 
     @EventHandler
-    public void anEvent(VillagerAcquireTradeEvent e) {
-        System.out.println("a");
+    public void placeBlock(BlockPlaceEvent e) {
+        Block placed = e.getBlockPlaced();
+        if (placed.getType() != Material.CARVED_PUMPKIN) {
+            return;
+        }
+        if (placed.getRelative(0, -1, 0).getType() == Material.IRON_BLOCK
+            && placed.getRelative(0, -2, 0).getType() == Material.IRON_BLOCK && (
+            (placed.getRelative(1, -1, 0).getType() == Material.IRON_BLOCK
+                && placed.getRelative(-1, -1, 0).getType() == Material.IRON_BLOCK) || (
+                placed.getRelative(0, -1, 1).getType() == Material.IRON_BLOCK
+                    && placed.getRelative(0, -1, -1).getType() == Material.IRON_BLOCK))) {
+            System.out.println("a");
+        }
     }
 }
