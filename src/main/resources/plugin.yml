@@ -17,3 +17,6 @@ commands:
   queuechallenge:
     description: MissionGameAware.
     aliases: [ qc ]
+  survchallenge:
+    description: MissionGameAware.
+    aliases: [ sc ]

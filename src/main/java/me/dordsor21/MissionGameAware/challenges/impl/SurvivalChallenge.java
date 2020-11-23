@@ -2,6 +2,7 @@ package me.dordsor21.MissionGameAware.challenges.impl;
 
 import me.dordsor21.MissionGameAware.MissionGameAware;
 import me.dordsor21.MissionGameAware.challenges.Challenge;
+import me.dordsor21.MissionGameAware.challenges.Survival.SingleChallenge;
 import me.dordsor21.MissionGameAware.challenges.Survival.SurvChallenge;
 import me.dordsor21.MissionGameAware.challenges.Survival.impl.BedrockHurt;
 import me.dordsor21.MissionGameAware.challenges.Survival.impl.Breed;
@@ -17,8 +18,12 @@ import me.dordsor21.MissionGameAware.challenges.Survival.impl.IronGolem;
 import me.dordsor21.MissionGameAware.challenges.Survival.impl.KillCommonMob;
 import me.dordsor21.MissionGameAware.challenges.Survival.impl.KillPlayer;
 import me.dordsor21.MissionGameAware.challenges.Survival.impl.KillRareMob;
+import me.dordsor21.MissionGameAware.challenges.Survival.impl.KillWither;
 import me.dordsor21.MissionGameAware.challenges.Survival.impl.MilkCow;
 import me.dordsor21.MissionGameAware.challenges.Survival.impl.Nether;
+import me.dordsor21.MissionGameAware.challenges.Survival.impl.SnowGolem;
+import me.dordsor21.MissionGameAware.challenges.Survival.impl.TameCat;
+import me.dordsor21.MissionGameAware.challenges.Survival.impl.TameWolf;
 import me.dordsor21.MissionGameAware.twists.Twist;
 import me.dordsor21.MissionGameAware.twists.impl.Bees;
 import me.dordsor21.MissionGameAware.twists.impl.Blindness;
@@ -54,10 +59,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
@@ -76,11 +83,14 @@ public class SurvivalChallenge extends Challenge {
     private static final List<Player> players = new ArrayList<>();
     private static final ArrayList<String> lore = new ArrayList<>();
     private static final Random rand = new Random();
-    private static final List<Supplier<SurvChallenge>> challengeList = new LinkedList<>(Arrays
-        .asList(BedrockHurt::new, Breed::new, Burn::new, CatchFish::new, FallDeath::new, GiveItem::new, GrowFarmFood::new,
-            GrowTree::new, KillCommonMob::new, KillPlayer::new, KillRareMob::new, Nether::new, ChickenEgg::new,
-            CraftCake::new, IronGolem::new, MilkCow::new));
+    private static final List<Class<? extends SurvChallenge>> challengeList = new ArrayList<>(Arrays
+        .asList(BedrockHurt.class, Breed.class, Burn.class, CatchFish.class, FallDeath.class, GiveItem.class,
+            GrowFarmFood.class, GrowTree.class, KillCommonMob.class, KillPlayer.class, KillRareMob.class, Nether.class,
+            ChickenEgg.class, CraftCake.class, IronGolem.class, MilkCow.class, KillWither.class, SnowGolem.class,
+            TameCat.class, TameWolf.class));
     private static final Location spawn = new Location(Bukkit.getWorld("world"), 100, 100, 100);
+    private static final List<SurvChallenge> running = new LinkedList<>();
+    private static final Set<Class<?>> run = new LinkedHashSet<>();
     private static ScheduledFuture<?> descr;
     private static ScheduledFuture<?> challenges;
     private static List<Player> top5 = new ArrayList<>();
@@ -303,11 +313,25 @@ public class SurvivalChallenge extends Challenge {
     }
 
 
-    private static final class ChallengeSelect implements Runnable {
+    public static final class ChallengeSelect implements Runnable {
 
         @Override
         public void run() {
-            int i = rand.nextInt(challengeList.size());
+            Class<? extends SurvChallenge> challenge;
+            Random r = new Random();
+            int size = challengeList.size();
+            while (!((challenge = challengeList.get(r.nextInt(size))).isInstance(SingleChallenge.class)) || !run
+                .contains(challenge)) {
+                try {
+                    SurvChallenge survChallenge = challenge.newInstance();
+                    running.add(survChallenge);
+                    if (survChallenge.isSingle()) {
+                        run.add(challenge);
+                    }
+                } catch (InstantiationException | IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }

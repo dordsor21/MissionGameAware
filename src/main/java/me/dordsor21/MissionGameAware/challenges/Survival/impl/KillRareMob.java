@@ -22,7 +22,7 @@ public class KillRareMob extends SurvChallenge {
     private final String name;
 
     public KillRareMob() {
-        Entities entity = Entities.values()[new Random().nextInt(EntityType.values().length)];
+        Entities entity = Entities.values()[new Random().nextInt(Entities.values().length)];
         name = entity.getNormalName();
         EntityType type = EntityType.valueOf(entity.name());
         Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
@@ -40,7 +40,7 @@ public class KillRareMob extends SurvChallenge {
         SILVERFISH("silverfish"), EVOKER("evoker"), GHAST("ghast"), GUARDIAN("guardian"), HUSK("husk"),
         ILLUSIONER("illusioner"), MAGMA_CUBE("magma cube"), MULE("mule"), MUSHROOM_COW("mooshroom"), PANDA("panda"),
         PARROT("parrot"), PHANTOM("phantom"), POLAR_BEAR("polar bear"), RAVAGER("ravager"), STRAY("stray"),
-        STRIDER("strider"), WITHER_SKELETON("wither skeleton"), WITHER("wither"), ZOGLIN("zoglin"),
+        STRIDER("strider"), WITHER_SKELETON("wither skeleton"), ZOGLIN("zoglin"),
         ZOMBIE_HORSE("zombie horse");
 
         private final String normalName;

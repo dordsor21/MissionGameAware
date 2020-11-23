@@ -17,14 +17,14 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import java.util.HashSet;
 import java.util.Set;
 
-public class IronGolem extends SingleTimedChallenge {
+public class SnowGolem extends SingleTimedChallenge {
     private final GrowTreeListener listener;
 
-    public IronGolem() {
+    public SnowGolem() {
         Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
-            Bukkit.broadcastMessage("§fBuild an Iron Golem. You have 2 minutes.");
+            Bukkit.broadcastMessage("§fBuild an Snow Golem. You have 3 minutes.");
         });
-        Bukkit.getScheduler().runTaskLater(MissionGameAware.plugin, this::finish, 2400L);
+        Bukkit.getScheduler().runTaskLater(MissionGameAware.plugin, this::finish, 3600L);
         Bukkit.getPluginManager().registerEvents((listener = new GrowTreeListener()), MissionGameAware.plugin);
     }
 
@@ -46,12 +46,8 @@ public class IronGolem extends SingleTimedChallenge {
             if (placed.getType() != Material.CARVED_PUMPKIN) {
                 return;
             }
-            if (placed.getRelative(0, -1, 0).getType() == Material.IRON_BLOCK
-                && placed.getRelative(0, -2, 0).getType() == Material.IRON_BLOCK && (
-                (placed.getRelative(1, -1, 0).getType() == Material.IRON_BLOCK
-                    && placed.getRelative(-1, -1, 0).getType() == Material.IRON_BLOCK) || (
-                    placed.getRelative(0, -1, 1).getType() == Material.IRON_BLOCK
-                        && placed.getRelative(0, -1, -1).getType() == Material.IRON_BLOCK))) {
+            if (placed.getRelative(0, -1, 0).getType() == Material.SNOW_BLOCK
+                && placed.getRelative(0, -2, 0).getType() == Material.SNOW_BLOCK) {
                 completed.add(e.getPlayer());
                 SurvivalChallenge.playerScores.merge(e.getPlayer(), 1, Integer::sum);
                 e.getPlayer().sendTitle("", ChatColor.translateAlternateColorCodes('&', "Point obtained!"), 0, 70, 20);

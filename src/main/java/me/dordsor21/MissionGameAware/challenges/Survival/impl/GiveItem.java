@@ -25,11 +25,11 @@ public class GiveItem extends TimedChallenge {
     private final GiveItemListener listener;
 
     public GiveItem() {
-        Lists.NiceItems item = Lists.NiceItems.values()[new Random().nextInt(EntityType.values().length)];
+        Lists.NiceItems item = Lists.NiceItems.values()[new Random().nextInt(Lists.NiceItems.values().length)];
         String name = item.name().toLowerCase().replace('_', ' ');
         Material type = Material.valueOf(item.name());
         Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
-            Bukkit.broadcastMessage("§fGive another player one §4" + name + "§f. You have 10 minutes.");
+            Bukkit.broadcastMessage("\\xA7fGive another player one \\xA74" + name + "\\xA7f. You have 10 minutes.");
         });
         Bukkit.getScheduler().runTaskLater(MissionGameAware.plugin, this::finish, 12000L);
         Bukkit.getPluginManager().registerEvents((listener = new GiveItemListener(type)), MissionGameAware.plugin);

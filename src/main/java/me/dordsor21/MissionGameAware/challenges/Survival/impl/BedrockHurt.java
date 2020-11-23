@@ -1,6 +1,7 @@
 package me.dordsor21.MissionGameAware.challenges.Survival.impl;
 
 import me.dordsor21.MissionGameAware.MissionGameAware;
+import me.dordsor21.MissionGameAware.challenges.Survival.SingleTimedChallenge;
 import me.dordsor21.MissionGameAware.challenges.Survival.TimedChallenge;
 import me.dordsor21.MissionGameAware.challenges.impl.SurvivalChallenge;
 import org.bukkit.Bukkit;
@@ -16,7 +17,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import java.util.HashSet;
 import java.util.Set;
 
-public class BedrockHurt extends TimedChallenge {
+public class BedrockHurt extends SingleTimedChallenge {
     private final HurtListener listener;
 
     public BedrockHurt() {

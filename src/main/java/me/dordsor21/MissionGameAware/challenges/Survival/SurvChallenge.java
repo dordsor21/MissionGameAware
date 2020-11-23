@@ -6,5 +6,9 @@ public abstract class SurvChallenge {
         return false;
     }
 
+    public boolean isSingle() {
+        return false;
+    }
+
     public abstract void finish();
 }

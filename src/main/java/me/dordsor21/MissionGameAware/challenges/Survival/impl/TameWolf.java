@@ -6,25 +6,24 @@ import me.dordsor21.MissionGameAware.challenges.Survival.TimedChallenge;
 import me.dordsor21.MissionGameAware.challenges.impl.SurvivalChallenge;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.entity.EntityTameEvent;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class CraftCake extends SingleTimedChallenge {
+public class TameWolf extends SingleTimedChallenge {
     private final GrowTreeListener listener;
 
-    public CraftCake() {
+    public TameWolf() {
         Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
-            Bukkit.broadcastMessage("§fBake a cake. You have 5 minutes.");
+            Bukkit.broadcastMessage("§fYou have 3 minutes to tame a wolf.");
         });
-        Bukkit.getScheduler().runTaskLater(MissionGameAware.plugin, this::finish, 6000L);
+        Bukkit.getScheduler().runTaskLater(MissionGameAware.plugin, this::finish, 3600L);
         Bukkit.getPluginManager().registerEvents((listener = new GrowTreeListener()), MissionGameAware.plugin);
     }
 
@@ -38,14 +37,11 @@ public class CraftCake extends SingleTimedChallenge {
         private final Set<Player> completed = new HashSet<>();
 
         @EventHandler
-        public void makeCAKE(CraftItemEvent e) {
-            if (e.getRecipe().getResult().getType() != Material.CAKE) {
+        public void placeBlock(EntityTameEvent e) {
+            if (e.getEntity().getType() != EntityType.WOLF || !(e.getOwner() instanceof Player)) {
                 return;
             }
-            if (e.getWhoClicked().getType() != EntityType.PLAYER) {
-                return;
-            }
-            Player p = (Player) e.getWhoClicked();
+            Player p = (Player) e.getOwner();
             if (completed.contains(p)) {
                 return;
             }

@@ -24,7 +24,7 @@ public class GrowFarmFood extends TimedChallenge {
     private final GrowFarmFoodListener listener;
 
     public GrowFarmFood() {
-        Lists.Farms item = Lists.Farms.values()[new Random().nextInt(EntityType.values().length)];
+        Lists.Farms item = Lists.Farms.values()[new Random().nextInt(Lists.Farms.values().length)];
         String name = item.name().toLowerCase().replace('_', ' ').replace("stem", "");
         Material type = Material.valueOf(item.name());
         Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
