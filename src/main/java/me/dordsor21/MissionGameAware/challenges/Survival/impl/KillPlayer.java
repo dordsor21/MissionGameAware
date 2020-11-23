@@ -32,6 +32,7 @@ public class KillPlayer extends TimedChallenge {
     @Override
     public void finish() {
         HandlerList.unregisterAll(listener);
+        SurvivalChallenge.running.remove(this);
     }
 
 

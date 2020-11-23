@@ -37,6 +37,7 @@ public class KillRareMob extends SurvChallenge {
     @Override
     public void finish() {
         HandlerList.unregisterAll(listener);
+        SurvivalChallenge.running.remove(this);
     }
 
     private enum Entities {

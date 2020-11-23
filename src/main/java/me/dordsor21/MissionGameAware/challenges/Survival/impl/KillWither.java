@@ -33,6 +33,7 @@ public class KillWither extends SingleChallenge {
     @Override
     public void finish() {
         HandlerList.unregisterAll(listener);
+        SurvivalChallenge.running.remove(this);
     }
 
     private static final class KillMobListener implements Listener {

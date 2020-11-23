@@ -41,6 +41,7 @@ public class GiveItem extends TimedChallenge {
     @Override
     public void finish() {
         HandlerList.unregisterAll(listener);
+        SurvivalChallenge.running.remove(this);
     }
 
     private static final class GiveItemListener implements Listener {

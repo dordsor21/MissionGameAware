@@ -32,6 +32,7 @@ public class Breed extends SingleTimedChallenge {
     @Override
     public void finish() {
         HandlerList.unregisterAll(listener);
+        SurvivalChallenge.running.remove(this);
     }
 
     private static final class BreedListener implements Listener {

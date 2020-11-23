@@ -21,7 +21,6 @@ public class LookUp extends MeanTwist {
     @Override
     public void escapePlayer(Player p) {
         escaped.add(p);
-        p.removePotionEffect(PotionEffectType.BLINDNESS);
     }
 
     @Override

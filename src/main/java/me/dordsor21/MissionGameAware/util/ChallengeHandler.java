@@ -15,5 +15,6 @@ public class ChallengeHandler {
 
     public void start(Challenge challenge) {
         this.setType(challenge.getType());
+        challenge.run();
     }
 }

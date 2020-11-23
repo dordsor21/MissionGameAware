@@ -40,6 +40,7 @@ import me.dordsor21.MissionGameAware.twists.impl.PumpkinHead;
 import me.dordsor21.MissionGameAware.twists.impl.Sheep;
 import me.dordsor21.MissionGameAware.twists.impl.Speed02;
 import me.dordsor21.MissionGameAware.twists.impl.Speed10;
+import me.dordsor21.MissionGameAware.twists.impl.TeleportAbout;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -76,21 +77,20 @@ public class SurvivalChallenge extends Challenge {
 
     public static final Map<Player, Integer> playerScores = new ConcurrentHashMap<>();
     public static final String cPr = "&4&l[&c&lChallenge&4&l] &r";
+    public static final List<SurvChallenge> running = new LinkedList<>();
     private static final List<Supplier<Twist>> twists = Collections.unmodifiableList(Arrays
         .asList(Blindness::new, Bees::new, FakeNuke::new, HangOn::new, ItemsGoBye::new, KittyCannonEract::new,
             LaserFocus::new, Lightning::new, LookDown::new, LookUp::new, Nausea::new, PumpkinHead::new, Sheep::new,
-            Speed02::new, Speed10::new));
+            Speed02::new, Speed10::new, TeleportAbout::new));
     private static final AtomicInteger descrStage = new AtomicInteger(0);
     private static final List<Player> players = new ArrayList<>();
     private static final ArrayList<String> lore = new ArrayList<>();
-    private static final Random rand = new Random();
     private static final List<Class<? extends SurvChallenge>> challengeList = new ArrayList<>(Arrays
         .asList(BedrockHurt.class, Breed.class, Burn.class, CatchFish.class, FallDeath.class, GiveItem.class,
             GrowFarmFood.class, GrowTree.class, KillCommonMob.class, KillPlayer.class, KillRareMob.class, Nether.class,
             ChickenEgg.class, CraftCake.class, IronGolem.class, MilkCow.class, KillWither.class, SnowGolem.class,
             TameCat.class, TameWolf.class));
     private static final Location spawn = new Location(Bukkit.getWorld("world"), 100, 100, 100);
-    private static final List<SurvChallenge> running = new LinkedList<>();
     private static final Set<Class<?>> run = new LinkedHashSet<>();
     private static ScheduledFuture<?> descr;
     private static ScheduledFuture<?> challenges;
@@ -116,7 +116,9 @@ public class SurvivalChallenge extends Challenge {
     public void stop() {
         descr.cancel(true);
         challenges.cancel(true);
-
+        for (SurvChallenge challenge : running) {
+            challenge.finish();
+        }
     }
 
     @Override
@@ -270,8 +272,9 @@ public class SurvivalChallenge extends Challenge {
                             p.getInventory().addItem(diamonds);
                         }
                     });
-                    challenges = Executors.newSingleThreadScheduledExecutor()
-                        .scheduleAtFixedRate(ChallengeSelect::new, 5L, 5L, TimeUnit.MINUTES);
+                    challenges =
+                        Executors.newSingleThreadScheduledExecutor().schedule(ChallengeSelect::new, 5L, TimeUnit.MINUTES);
+                    Bukkit.getPluginManager().registerEvents(new TwistListener(), MissionGameAware.plugin);
                 }).start();
             }
         }
@@ -335,6 +338,8 @@ public class SurvivalChallenge extends Challenge {
                     e.printStackTrace();
                 }
             }
+            challenges = Executors.newSingleThreadScheduledExecutor()
+                .schedule(ChallengeSelect::new, Math.round(60 + 240 * Math.random()), TimeUnit.MINUTES);
         }
     }
 }

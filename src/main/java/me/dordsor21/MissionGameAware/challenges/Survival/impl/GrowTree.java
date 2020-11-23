@@ -31,6 +31,7 @@ public class GrowTree extends TimedChallenge {
     @Override
     public void finish() {
         HandlerList.unregisterAll(listener);
+        SurvivalChallenge.running.remove(this);
     }
 
     private static final class GrowTreeListener implements Listener {

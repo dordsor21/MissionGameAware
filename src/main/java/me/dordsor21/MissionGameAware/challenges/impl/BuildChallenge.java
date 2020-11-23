@@ -22,6 +22,8 @@ import me.dordsor21.MissionGameAware.twists.impl.Sheep;
 import me.dordsor21.MissionGameAware.twists.impl.SimonSaysFunBoxTime;
 import me.dordsor21.MissionGameAware.twists.impl.Speed02;
 import me.dordsor21.MissionGameAware.twists.impl.Speed10;
+import me.dordsor21.MissionGameAware.twists.impl.TeleportAbout;
+import me.dordsor21.MissionGameAware.twists.impl.Zoom;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -31,9 +33,10 @@ import java.util.function.Supplier;
 public class BuildChallenge extends Challenge {
 
     private static final List<Supplier<Twist>> twists = Collections.unmodifiableList(Arrays
-        .asList(BlindnessTeleport::new, Blindness::new, Bees::new, Cookies::new, FakeNuke::new, HangOn::new, ItemsGoBye::new, KittyCannonEract::new,
-            LaserFocus::new, Lightning::new, LookDown::new, LookUp::new, Nausea::new, PumpkinHead::new, RandomTeleport::new, Sheep::new,
-            SimonSaysFunBoxTime::new, Speed02::new, Speed10::new));
+        .asList(BlindnessTeleport::new, Blindness::new, Bees::new, Cookies::new, FakeNuke::new, HangOn::new, ItemsGoBye::new,
+            KittyCannonEract::new, LaserFocus::new, Lightning::new, LookDown::new, LookUp::new, Nausea::new,
+            PumpkinHead::new, RandomTeleport::new, Sheep::new, SimonSaysFunBoxTime::new, Speed02::new, Speed10::new,
+            TeleportAbout::new, Zoom::new));
 
     public BuildChallenge() {
         for (Supplier<Twist> twist : twists) {
