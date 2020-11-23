@@ -12,15 +12,19 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 public class KillPlayer extends TimedChallenge {
 
+    private static final String[] messages =
+        new String[] {"Kill another &cplayer&f. You have 5 minutes.", "You have 5 minutes to kill another &cplayer&f.",
+            "Kill another &cplayer&f in the next 5 minutes."};
     private final KillMobListener listener;
 
     public KillPlayer() {
-        Bukkit.getScheduler()
-            .runTask(MissionGameAware.plugin, () -> Bukkit.broadcastMessage("§fKill a player. You have 5 minutes."));
+        Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> Bukkit.broadcastMessage(
+            ChatColor.translateAlternateColorCodes('&', SurvivalChallenge.cPr + messages[new Random().nextInt(3)])));
         Bukkit.getScheduler().runTaskLater(MissionGameAware.plugin, this::finish, 6000L);
         Bukkit.getPluginManager().registerEvents((listener = new KillMobListener()), MissionGameAware.plugin);
     }

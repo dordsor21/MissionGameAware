@@ -12,16 +12,19 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
 
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 public class CatchFish extends TimedChallenge {
 
+    private static final String[] messages =
+        new String[] {"Catch a &cfish&f. You have 5 minutes.", "You have 5 minutes to catch a &cfish&f.",
+            "Catch a &cfish&f in the next 5 minutes."};
     private final FishingListener listener;
 
     public CatchFish() {
-        Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
-            Bukkit.broadcastMessage("§fCatch a fish. You have 5 minutes.");
-        });
+        Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> Bukkit.broadcastMessage(
+            ChatColor.translateAlternateColorCodes('&', SurvivalChallenge.cPr + messages[new Random().nextInt(3)])));
         Bukkit.getScheduler().runTaskLater(MissionGameAware.plugin, this::finish, 6000L);
         Bukkit.getPluginManager().registerEvents((listener = new FishingListener()), MissionGameAware.plugin);
     }

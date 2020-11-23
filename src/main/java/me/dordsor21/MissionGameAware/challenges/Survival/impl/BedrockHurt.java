@@ -2,7 +2,6 @@ package me.dordsor21.MissionGameAware.challenges.Survival.impl;
 
 import me.dordsor21.MissionGameAware.MissionGameAware;
 import me.dordsor21.MissionGameAware.challenges.Survival.SingleTimedChallenge;
-import me.dordsor21.MissionGameAware.challenges.Survival.TimedChallenge;
 import me.dordsor21.MissionGameAware.challenges.impl.SurvivalChallenge;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -15,15 +14,17 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 public class BedrockHurt extends SingleTimedChallenge {
+    private static final String[] messages = new String[] {"Hurt your hand on some &cbedrock&f. You have 2 minutes.",
+        "You have 2 minutes to hurt your hand on some &cbedrock&f.", "Hurt your hand on &cbedrock&f in the next 2 minutes."};
     private final HurtListener listener;
 
     public BedrockHurt() {
-        Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
-            Bukkit.broadcastMessage("§fHurt your hand on some bedrock. You have 2 minutes.");
-        });
+        Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> Bukkit.broadcastMessage(
+            ChatColor.translateAlternateColorCodes('&', SurvivalChallenge.cPr + messages[new Random().nextInt(3)])));
         Bukkit.getScheduler().runTaskLater(MissionGameAware.plugin, this::finish, 2400L);
         Bukkit.getPluginManager().registerEvents((listener = new HurtListener()), MissionGameAware.plugin);
     }

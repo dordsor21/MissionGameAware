@@ -13,15 +13,17 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 public class Burn extends TimedChallenge {
+    private static final String[] messages = new String[] {"&cBurn&f. You have 2 minutes to earn double points.",
+        "You have 2 minutes to &cBurn&f. This is worth double points.", "&cBurn&f in the next 2 minutes for double points."};
     private final GrowTreeListener listener;
 
     public Burn() {
-        Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
-            Bukkit.broadcastMessage("§4Burn&f. You have 2 minutes. This is worth double points.");
-        });
+        Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> Bukkit.broadcastMessage(
+            ChatColor.translateAlternateColorCodes('&', SurvivalChallenge.cPr + messages[new Random().nextInt(3)])));
         Bukkit.getScheduler().runTaskLater(MissionGameAware.plugin, this::finish, 2400L);
         Bukkit.getPluginManager().registerEvents((listener = new GrowTreeListener()), MissionGameAware.plugin);
     }

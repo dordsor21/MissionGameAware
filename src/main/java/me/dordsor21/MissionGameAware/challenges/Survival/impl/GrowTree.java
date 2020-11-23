@@ -12,15 +12,18 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.world.StructureGrowEvent;
 
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 public class GrowTree extends TimedChallenge {
+    private static final String[] messages =
+        new String[] {"Grow a tree &ctree&f. You have 3 minutes.", "You have 3 minutes to grow a tree &ctree&f.",
+            "Grow a &ctree&f in the next 3 minutes."};
     private final GrowTreeListener listener;
 
     public GrowTree() {
-        Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
-            Bukkit.broadcastMessage("§fGrow a tree. You have 3 minutes.");
-        });
+        Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> Bukkit.broadcastMessage(
+            ChatColor.translateAlternateColorCodes('&', SurvivalChallenge.cPr + messages[new Random().nextInt(3)])));
         Bukkit.getScheduler().runTaskLater(MissionGameAware.plugin, this::finish, 3600L);
         Bukkit.getPluginManager().registerEvents((listener = new GrowTreeListener()), MissionGameAware.plugin);
     }

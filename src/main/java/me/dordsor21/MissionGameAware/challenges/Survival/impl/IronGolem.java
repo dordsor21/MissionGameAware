@@ -2,7 +2,6 @@ package me.dordsor21.MissionGameAware.challenges.Survival.impl;
 
 import me.dordsor21.MissionGameAware.MissionGameAware;
 import me.dordsor21.MissionGameAware.challenges.Survival.SingleTimedChallenge;
-import me.dordsor21.MissionGameAware.challenges.Survival.TimedChallenge;
 import me.dordsor21.MissionGameAware.challenges.impl.SurvivalChallenge;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -15,15 +14,18 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 public class IronGolem extends SingleTimedChallenge {
+    private static final String[] messages =
+        new String[] {"Build an &cIron Golem&f. You have 2 minutes.", "You have 2 minutes to build an &cIron Golem&f.",
+            "Build an &cIron Golem&f in the next 2 minutes."};
     private final GrowTreeListener listener;
 
     public IronGolem() {
-        Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
-            Bukkit.broadcastMessage("§fBuild an Iron Golem. You have 2 minutes.");
-        });
+        Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> Bukkit.broadcastMessage(
+            ChatColor.translateAlternateColorCodes('&', SurvivalChallenge.cPr + messages[new Random().nextInt(3)])));
         Bukkit.getScheduler().runTaskLater(MissionGameAware.plugin, this::finish, 2400L);
         Bukkit.getPluginManager().registerEvents((listener = new GrowTreeListener()), MissionGameAware.plugin);
     }

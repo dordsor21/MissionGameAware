@@ -18,16 +18,18 @@ import java.util.Set;
 
 public class KillCommonMob extends TimedChallenge {
 
-    private final String name;
+    private static final String[] messages =
+        new String[] {"Kill a &c%s&f. You have 5 minutes.", "You have 5 minutes to kill a &c%s&f.",
+            "Kill a &c%s&f in the next 5 minutes."};
     private final KillMobListener listener;
 
     public KillCommonMob() {
         Entities entity = Entities.values()[new Random().nextInt(Entities.values().length)];
-        name = entity.name().toLowerCase().replace('_', ' ');
+        String name = entity.name().toLowerCase().replace('_', ' ');
         EntityType type = EntityType.valueOf(entity.name());
-        Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
-            Bukkit.broadcastMessage("§fKill a §4" + name + "§f. You have 5 minutes.");
-        });
+        Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> Bukkit.broadcastMessage(ChatColor
+            .translateAlternateColorCodes('&',
+                String.format(SurvivalChallenge.cPr + messages[new Random().nextInt(3)], name))));
         Bukkit.getScheduler().runTaskLater(MissionGameAware.plugin, this::finish, 6000L);
         Bukkit.getPluginManager().registerEvents((listener = new KillMobListener(type)), MissionGameAware.plugin);
     }

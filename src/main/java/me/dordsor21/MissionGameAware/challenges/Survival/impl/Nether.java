@@ -5,25 +5,26 @@ import me.dordsor21.MissionGameAware.challenges.Survival.TimedChallenge;
 import me.dordsor21.MissionGameAware.challenges.impl.SurvivalChallenge;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 public class Nether extends TimedChallenge {
+    private static final String[] messages =
+        new String[] {"Get to the &cNether&f. You have 30 seconds.", "You have 30 seconds to get to the &cNether&f&f.",
+            "Get to the &cNether&f&f in the next 30 seconds."};
     private final NetherListener listener;
 
     public Nether() {
-        Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
-            Bukkit.broadcastMessage("§fGet to the Nether in 30 seconds.");
-        });
+        Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> Bukkit.broadcastMessage(
+            ChatColor.translateAlternateColorCodes('&', SurvivalChallenge.cPr + messages[new Random().nextInt(3)])));
         Bukkit.getScheduler().runTaskLater(MissionGameAware.plugin, this::finish, 600L);
         Bukkit.getPluginManager().registerEvents((listener = new NetherListener()), MissionGameAware.plugin);
     }

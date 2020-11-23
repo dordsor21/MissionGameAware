@@ -18,16 +18,19 @@ import java.util.Set;
 
 public class KillRareMob extends SurvChallenge {
 
+    private static final String[] messages =
+        new String[] {"Kill a &c%s&f. You have until the end of the Survival challenge.",
+            "You have until the end of the Survival challenge to kill a &c%s&f.",
+            "Kill a &c%s&f by the end of the Survival challenge."};
     private final KillMobListener listener;
-    private final String name;
 
     public KillRareMob() {
         Entities entity = Entities.values()[new Random().nextInt(Entities.values().length)];
-        name = entity.getNormalName();
+        String name = entity.getNormalName();
         EntityType type = EntityType.valueOf(entity.name());
-        Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
-            Bukkit.broadcastMessage("§fKill a §4" + name + "§f. You have until the end of the Survival challenge.");
-        });
+        Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> Bukkit.broadcastMessage(ChatColor
+            .translateAlternateColorCodes('&',
+                String.format(SurvivalChallenge.cPr + messages[new Random().nextInt(3)], name))));
         Bukkit.getPluginManager().registerEvents((listener = new KillMobListener(type)), MissionGameAware.plugin);
     }
 
@@ -40,8 +43,7 @@ public class KillRareMob extends SurvChallenge {
         SILVERFISH("silverfish"), EVOKER("evoker"), GHAST("ghast"), GUARDIAN("guardian"), HUSK("husk"),
         ILLUSIONER("illusioner"), MAGMA_CUBE("magma cube"), MULE("mule"), MUSHROOM_COW("mooshroom"), PANDA("panda"),
         PARROT("parrot"), PHANTOM("phantom"), POLAR_BEAR("polar bear"), RAVAGER("ravager"), STRAY("stray"),
-        STRIDER("strider"), WITHER_SKELETON("wither skeleton"), ZOGLIN("zoglin"),
-        ZOMBIE_HORSE("zombie horse");
+        STRIDER("strider"), WITHER_SKELETON("wither skeleton"), ZOGLIN("zoglin"), ZOMBIE_HORSE("zombie horse");
 
         private final String normalName;
 

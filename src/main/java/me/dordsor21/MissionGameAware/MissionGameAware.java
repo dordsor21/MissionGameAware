@@ -1,6 +1,5 @@
 package me.dordsor21.MissionGameAware;
 
-import me.dordsor21.MissionGameAware.challenges.impl.SurvivalChallenge;
 import me.dordsor21.MissionGameAware.command.ManualCancelCommand;
 import me.dordsor21.MissionGameAware.command.ManualQueueChallengeCommand;
 import me.dordsor21.MissionGameAware.command.ManualQueueCommand;
@@ -14,11 +13,11 @@ import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.server.ServerLoadEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class MissionGameAware extends JavaPlugin implements Listener {
 
+    public static final String prefix = "&6[&eMGA&6] &f";
     private static final TwistLocks twistLocks = new TwistLocks();
     private static final RandomTwists randomTwists = new RandomTwists();
     private static final ChallengeHandler challengeHandler = new ChallengeHandler();

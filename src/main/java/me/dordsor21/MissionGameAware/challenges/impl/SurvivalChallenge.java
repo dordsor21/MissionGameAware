@@ -75,6 +75,7 @@ import java.util.function.Supplier;
 public class SurvivalChallenge extends Challenge {
 
     public static final Map<Player, Integer> playerScores = new ConcurrentHashMap<>();
+    public static final String cPr = "&4&l[&c&lChallenge&4&l] &r";
     private static final List<Supplier<Twist>> twists = Collections.unmodifiableList(Arrays
         .asList(Blindness::new, Bees::new, FakeNuke::new, HangOn::new, ItemsGoBye::new, KittyCannonEract::new,
             LaserFocus::new, Lightning::new, LookDown::new, LookUp::new, Nausea::new, PumpkinHead::new, Sheep::new,
@@ -320,14 +321,16 @@ public class SurvivalChallenge extends Challenge {
             Class<? extends SurvChallenge> challenge;
             Random r = new Random();
             int size = challengeList.size();
-            while (!((challenge = challengeList.get(r.nextInt(size))).isInstance(SingleChallenge.class)) || !run
-                .contains(challenge)) {
+            while (
+                !(challenge = challengeList.get(r.nextInt(size))).getSuperclass().equals(SingleChallenge.class) && !challenge
+                    .getSuperclass().getSuperclass().equals(SingleChallenge.class) || !run.contains(challenge)) {
                 try {
                     SurvChallenge survChallenge = challenge.newInstance();
                     running.add(survChallenge);
                     if (survChallenge.isSingle()) {
                         run.add(challenge);
                     }
+                    break;
                 } catch (InstantiationException | IllegalAccessException e) {
                     e.printStackTrace();
                 }

@@ -7,9 +7,9 @@ import me.dordsor21.MissionGameAware.util.Lists;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -22,22 +22,25 @@ import java.util.UUID;
 
 public class GiveItem extends TimedChallenge {
 
+    private static final String[] messages = new String[] {"Give another player one &c%s&f. You have 10 minutes.",
+        "You have 10 minutes to give one &c%s&f to another player.",
+        "Give another player one &c%s&f in the next 10 minutes."};
     private final GiveItemListener listener;
 
     public GiveItem() {
         Lists.NiceItems item = Lists.NiceItems.values()[new Random().nextInt(Lists.NiceItems.values().length)];
         String name = item.name().toLowerCase().replace('_', ' ');
         Material type = Material.valueOf(item.name());
-        Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
-            Bukkit.broadcastMessage("\\xA7fGive another player one \\xA74" + name + "\\xA7f. You have 10 minutes.");
-        });
+        Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> Bukkit.broadcastMessage(ChatColor
+            .translateAlternateColorCodes('&',
+                String.format(SurvivalChallenge.cPr + messages[new Random().nextInt(3)], name))));
         Bukkit.getScheduler().runTaskLater(MissionGameAware.plugin, this::finish, 12000L);
         Bukkit.getPluginManager().registerEvents((listener = new GiveItemListener(type)), MissionGameAware.plugin);
     }
 
     @Override
     public void finish() {
-
+        HandlerList.unregisterAll(listener);
     }
 
     private static final class GiveItemListener implements Listener {
