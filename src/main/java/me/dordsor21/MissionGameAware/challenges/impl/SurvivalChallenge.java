@@ -128,8 +128,7 @@ public class SurvivalChallenge extends Challenge {
         }
         descrStage.set(0);
         descr = Executors.newSingleThreadScheduledExecutor()
-            .scheduleAtFixedRate(SurvivalDescribe::new, 5L, 5L, TimeUnit.SECONDS);
-        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(ChallengeSelect::new, 5L, 5L, TimeUnit.MINUTES);
+            .scheduleAtFixedRate(new SurvivalDescribe(), 5L, 5L, TimeUnit.SECONDS);
     }
 
     private static final class SurvivalDescribe implements Runnable {
@@ -273,7 +272,7 @@ public class SurvivalChallenge extends Challenge {
                         }
                     });
                     challenges =
-                        Executors.newSingleThreadScheduledExecutor().schedule(ChallengeSelect::new, 5L, TimeUnit.MINUTES);
+                        Executors.newSingleThreadScheduledExecutor().schedule(new ChallengeSelect(), 5L, TimeUnit.MINUTES);
                     Bukkit.getPluginManager().registerEvents(new TwistListener(), MissionGameAware.plugin);
                 }).start();
             }
@@ -339,7 +338,7 @@ public class SurvivalChallenge extends Challenge {
                 }
             }
             challenges = Executors.newSingleThreadScheduledExecutor()
-                .schedule(ChallengeSelect::new, Math.round(60 + 240 * Math.random()), TimeUnit.MINUTES);
+                .schedule(new ChallengeSelect(), Math.round(60 + 240 * Math.random()), TimeUnit.MINUTES);
         }
     }
 }

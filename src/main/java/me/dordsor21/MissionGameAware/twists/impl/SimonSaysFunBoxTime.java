@@ -62,6 +62,9 @@ public class SimonSaysFunBoxTime extends EvilTwist implements SoleTwist {
         if (t != null) {
             t.cancel();
         }
+        if (r != null) {
+            r.cancel();
+        }
         cancelled = true;
         super.cancel();
     }
