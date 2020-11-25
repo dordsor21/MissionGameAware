@@ -105,6 +105,7 @@ public class SurvivalChallenge extends Challenge {
     private static List<Player> top5 = new ArrayList<>();
     private static Player pvpwinner = null;
     private static PVPListener pvpListener;
+    private static DeathListener deathListener;
 
     static {
         lore.add("Throw me to escape a twist!");
@@ -130,6 +131,7 @@ public class SurvivalChallenge extends Challenge {
         for (SurvChallenge challenge : running) {
             challenge.finish();
         }
+        HandlerList.unregisterAll(deathListener);
     }
 
     @Override
@@ -291,6 +293,7 @@ public class SurvivalChallenge extends Challenge {
                     });
                     challenges =
                         Executors.newSingleThreadScheduledExecutor().schedule(new ChallengeSelect(), 5L, TimeUnit.MINUTES);
+                    deathListener = new DeathListener();
                     Bukkit.getPluginManager().registerEvents(new TwistListener(), MissionGameAware.plugin);
                 }).start();
             }
