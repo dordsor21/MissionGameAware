@@ -12,15 +12,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Bees extends WeirdTwist implements SoleTwist {
 
     private static final Vector up = new Vector(0, 1, 0);
     private static final Vector halves = new Vector(0.5, 0.5, 0.5);
-    private static final HashMap<Player, List<Bee>> playerbees = new HashMap<>();
+    private static final Map<Player, List<Bee>> playerbees = new ConcurrentHashMap<>();
     private Thread t = null;
 
     @Override
@@ -121,7 +121,7 @@ public class Bees extends WeirdTwist implements SoleTwist {
                     babies.add(baby);
                 }
             }, 1L);
-            playerbees.put(entry.getKey(), babies);
+            playerbees.replace(entry.getKey(), babies);
         }
     }
 

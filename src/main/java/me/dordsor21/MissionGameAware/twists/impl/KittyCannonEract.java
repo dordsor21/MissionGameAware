@@ -27,7 +27,7 @@ public class KittyCannonEract extends WeirdTwist {
     public void start() {
         escaped.clear();
         Bukkit.getPluginManager().registerEvents((listener = new KittyCannonListener()), MissionGameAware.plugin);
-        r = Bukkit.getScheduler().runTaskLater(MissionGameAware.plugin, this::complete, 6000L);
+        r = Bukkit.getScheduler().runTaskLater(MissionGameAware.plugin, this::complete, 600L);
     }
 
     @Override

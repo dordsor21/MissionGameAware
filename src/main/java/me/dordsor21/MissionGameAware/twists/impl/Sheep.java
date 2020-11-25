@@ -14,9 +14,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Sheep extends WeirdTwist implements SoleTwist {
 
@@ -27,7 +27,7 @@ public class Sheep extends WeirdTwist implements SoleTwist {
             DyeColor.LIGHT_BLUE, DyeColor.LIGHT_GRAY, DyeColor.LIME, DyeColor.MAGENTA, DyeColor.ORANGE, DyeColor.PINK,
             DyeColor.PURPLE, DyeColor.RED, DyeColor.WHITE, DyeColor.YELLOW};
     private static final IChatBaseComponent jeb = IChatBaseComponent.ChatSerializer.b("jeb_");
-    private static final HashMap<Player, List<org.bukkit.entity.Sheep>> playersheep = new HashMap<>();
+    private static final Map<Player, List<org.bukkit.entity.Sheep>> playersheep = new ConcurrentHashMap<>();
     private Thread t = null;
 
     @Override

@@ -26,12 +26,14 @@ public class Lightning extends WeirdTwist {
     @Override
     public void start() {
         escaped.clear();
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            if (escaped.contains(p)) {
-                continue;
+        Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                if (escaped.contains(p)) {
+                    continue;
+                }
+                p.getWorld().strikeLightningEffect(p.getLocation());
             }
-            p.getWorld().strikeLightningEffect(p.getLocation());
-        }
+        });
         r = Bukkit.getScheduler().runTaskLater(MissionGameAware.plugin, this::complete, 30 * 20L);
         final Random rr = new Random();
         t = Bukkit.getScheduler().runTaskTimer(MissionGameAware.plugin, () -> {
@@ -40,7 +42,7 @@ public class Lightning extends WeirdTwist {
                 return;
             }
             p.getWorld().strikeLightningEffect(p.getLocation());
-        }, 10, 2);
+        }, 10, 4);
     }
 
     @Override

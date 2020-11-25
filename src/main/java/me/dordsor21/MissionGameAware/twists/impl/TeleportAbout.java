@@ -31,13 +31,15 @@ public class TeleportAbout extends EvilTwist {
         }
         List<Map.Entry<Player, Location>> locs = new ArrayList<>(initial.entrySet());
         Random r = new Random();
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            Map.Entry<Player, Location> entry = locs.remove(r.nextInt(locs.size()));
-            p.teleport(entry.getValue());
-            p.sendTitle(ChatColor
-                    .translateAlternateColorCodes('&', "&3Wondering where &c" + entry.getKey().getName() + "&3 is? Here!"), "",
-                0, 70, 20);
-        }
+        Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                Map.Entry<Player, Location> entry = locs.remove(r.nextInt(locs.size()));
+                p.teleport(entry.getValue());
+                p.sendTitle(ChatColor
+                        .translateAlternateColorCodes('&', "&3Wondering where &c" + entry.getKey().getName() + "&3 is? Here!"),
+                    "", 0, 70, 20);
+            }
+        });
         t = Bukkit.getScheduler().runTaskLater(MissionGameAware.plugin, () -> initial.forEach(Player::teleport), 100L);
         t = Bukkit.getScheduler().runTaskLater(MissionGameAware.plugin, this::complete, 101L);
     }

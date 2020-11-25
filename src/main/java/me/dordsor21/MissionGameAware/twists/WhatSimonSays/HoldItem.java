@@ -10,18 +10,22 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class HoldItem implements WhatSimonSays {
 
     private final Material item;
     private final Material[] list = new Material[9];
+    private final Map<Player, ItemStack[]> pItimes = new ConcurrentHashMap<>();
 
     public HoldItem() {
         Material[] mats = Material.values();
         Random r = new Random();
-        int i = r.nextInt(mats.length);
+        r.nextInt(mats.length);
         for (int n = 0; n < 9; n++) {
+            int i = r.nextInt(mats.length);
             Material mat = mats[i];
             while (mat.isAir() || !mat.isItem()) {
                 i = r.nextInt(mats.length);
@@ -47,22 +51,13 @@ public class HoldItem implements WhatSimonSays {
                             continue;
                         }
                         ItemStack[] items = p.getInventory().getContents();
+                        pItimes.put(p, items.clone());
                         for (int i = 0; i < 9; i++) {
                             items[i] = new ItemStack(list[i]);
                         }
                         p.getInventory().setContents(items);
                     }
                 });
-                Thread.sleep(5000L);
-                Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
-                    for (Player p : Bukkit.getOnlinePlayers()) {
-                        if (SimonSaysFunBoxTime.escaped.contains(p)) {
-                            continue;
-                        }
-                        p.sendTitle(ChatColor.translateAlternateColorCodes('&', "&l3"), "", 5, 10, 5);
-                    }
-                });
-                Thread.sleep(1000L);
                 Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
                     for (Player p : Bukkit.getOnlinePlayers()) {
                         if (SimonSaysFunBoxTime.escaped.contains(p)) {
@@ -87,11 +82,13 @@ public class HoldItem implements WhatSimonSays {
                     if (SimonSaysFunBoxTime.escaped.contains(p)) {
                         continue;
                     }
-                    if ((p.getInventory().getItemInMainHand().getType() == item || p.getInventory().getItemInOffHand().getType() == item) != value) {
+                    if ((p.getInventory().getItemInMainHand().getType() == item
+                        || p.getInventory().getItemInOffHand().getType() == item) != value) {
                         fail.add(p);
                     } else {
                         pass.add(p);
                     }
+                    p.getInventory().setContents(pItimes.get(p));
                 }
                 funBox(fail);
                 good(pass);

@@ -25,6 +25,7 @@ import me.dordsor21.MissionGameAware.challenges.Survival.impl.SnowGolem;
 import me.dordsor21.MissionGameAware.challenges.Survival.impl.TameCat;
 import me.dordsor21.MissionGameAware.challenges.Survival.impl.TameWolf;
 import me.dordsor21.MissionGameAware.twists.Twist;
+import me.dordsor21.MissionGameAware.twists.impl.AnEffect;
 import me.dordsor21.MissionGameAware.twists.impl.Bees;
 import me.dordsor21.MissionGameAware.twists.impl.Blindness;
 import me.dordsor21.MissionGameAware.twists.impl.FakeNuke;
@@ -35,7 +36,9 @@ import me.dordsor21.MissionGameAware.twists.impl.LaserFocus;
 import me.dordsor21.MissionGameAware.twists.impl.Lightning;
 import me.dordsor21.MissionGameAware.twists.impl.LookDown;
 import me.dordsor21.MissionGameAware.twists.impl.LookUp;
+import me.dordsor21.MissionGameAware.twists.impl.ManyMobs;
 import me.dordsor21.MissionGameAware.twists.impl.Nausea;
+import me.dordsor21.MissionGameAware.twists.impl.NightDay;
 import me.dordsor21.MissionGameAware.twists.impl.PumpkinHead;
 import me.dordsor21.MissionGameAware.twists.impl.Sheep;
 import me.dordsor21.MissionGameAware.twists.impl.Speed02;
@@ -81,7 +84,7 @@ public class SurvivalChallenge extends Challenge {
     private static final List<Supplier<Twist>> twists = Collections.unmodifiableList(Arrays
         .asList(Blindness::new, Bees::new, FakeNuke::new, HangOn::new, ItemsGoBye::new, KittyCannonEract::new,
             LaserFocus::new, Lightning::new, LookDown::new, LookUp::new, Nausea::new, PumpkinHead::new, Sheep::new,
-            Speed02::new, Speed10::new, TeleportAbout::new));
+            Speed02::new, Speed10::new, TeleportAbout::new, ManyMobs::new, AnEffect::new, NightDay::new));
     private static final AtomicInteger descrStage = new AtomicInteger(0);
     private static final List<Player> players = new ArrayList<>();
     private static final ArrayList<String> lore = new ArrayList<>();
@@ -103,6 +106,8 @@ public class SurvivalChallenge extends Challenge {
         lore.add("Single use only!");
     }
 
+    private boolean isRunning = false;
+
     @Override
     public Type getType() {
         return Type.SURVIVAL;
@@ -114,6 +119,7 @@ public class SurvivalChallenge extends Challenge {
 
     @Override
     public void stop() {
+        this.isRunning = false;
         descr.cancel(true);
         challenges.cancel(true);
         for (SurvChallenge challenge : running) {
@@ -122,9 +128,16 @@ public class SurvivalChallenge extends Challenge {
     }
 
     @Override
+    public boolean isRunning() {
+        return isRunning;
+    }
+
+    @Override
     public void run() {
-        for (Supplier<Twist> twist : twists) {
-            MissionGameAware.plugin.getTwistLocks().queueTwist(twist.get());
+        this.isRunning = true;
+        Random r = new Random();
+        while (MissionGameAware.queueTwists.getAndDecrement() > 0) {
+            MissionGameAware.plugin.getTwistLocks().queueTwist(twists.get(r.nextInt(twists.size())).get());
         }
         descrStage.set(0);
         descr = Executors.newSingleThreadScheduledExecutor()

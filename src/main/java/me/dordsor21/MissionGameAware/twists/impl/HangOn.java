@@ -1,6 +1,7 @@
 package me.dordsor21.MissionGameAware.twists.impl;
 
 import me.dordsor21.MissionGameAware.twists.EvilTwist;
+import me.dordsor21.MissionGameAware.twists.SoleTwist;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -10,7 +11,7 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.Map;
 
-public class HangOn extends EvilTwist {
+public class HangOn extends EvilTwist implements SoleTwist {
 
     @Override
     public void escapePlayer(Player p) {

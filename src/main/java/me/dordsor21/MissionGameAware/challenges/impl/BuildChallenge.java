@@ -16,6 +16,7 @@ import me.dordsor21.MissionGameAware.twists.impl.Lightning;
 import me.dordsor21.MissionGameAware.twists.impl.LookDown;
 import me.dordsor21.MissionGameAware.twists.impl.LookUp;
 import me.dordsor21.MissionGameAware.twists.impl.Nausea;
+import me.dordsor21.MissionGameAware.twists.impl.NightDay;
 import me.dordsor21.MissionGameAware.twists.impl.PumpkinHead;
 import me.dordsor21.MissionGameAware.twists.impl.RandomTeleport;
 import me.dordsor21.MissionGameAware.twists.impl.Sheep;
@@ -28,6 +29,7 @@ import me.dordsor21.MissionGameAware.twists.impl.Zoom;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.function.Supplier;
 
 public class BuildChallenge extends Challenge {
@@ -36,7 +38,8 @@ public class BuildChallenge extends Challenge {
         .asList(BlindnessTeleport::new, Blindness::new, Bees::new, Cookies::new, FakeNuke::new, HangOn::new, ItemsGoBye::new,
             KittyCannonEract::new, LaserFocus::new, Lightning::new, LookDown::new, LookUp::new, Nausea::new,
             PumpkinHead::new, RandomTeleport::new, Sheep::new, SimonSaysFunBoxTime::new, Speed02::new, Speed10::new,
-            TeleportAbout::new, Zoom::new));
+            TeleportAbout::new, Zoom::new, NightDay::new));
+    private boolean running = false;
 
     public BuildChallenge() {
         for (Supplier<Twist> twist : twists) {
@@ -51,7 +54,12 @@ public class BuildChallenge extends Challenge {
 
     @Override
     public void stop() {
+        this.running = false;
+    }
 
+    @Override
+    public boolean isRunning() {
+        return false;
     }
 
     public List<Supplier<Twist>> getTwists() {
@@ -60,6 +68,10 @@ public class BuildChallenge extends Challenge {
 
     @Override
     public void run() {
-
+        this.running = true;
+        Random r = new Random();
+        while (MissionGameAware.queueTwists.getAndDecrement() > 0) {
+            MissionGameAware.plugin.getTwistLocks().queueTwist(twists.get(r.nextInt(twists.size())).get());
+        }
     }
 }

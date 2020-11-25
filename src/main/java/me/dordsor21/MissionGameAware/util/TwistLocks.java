@@ -45,6 +45,8 @@ public class TwistLocks {
                 if (niceTwist == null || niceTwist.isComplete()) {
                     niceTwist = (NiceTwist) twist;
                     return checkSoleTwist(twist);
+                } else if (twist instanceof SoleTwist) {
+                    queueSoleTwist(twist);
                 } else {
                     niceTwistQueue.add((NiceTwist) twist);
                 }
@@ -53,6 +55,8 @@ public class TwistLocks {
                 if (meanTwist == null || meanTwist.isComplete()) {
                     meanTwist = (MeanTwist) twist;
                     return checkSoleTwist(twist);
+                } else if (twist instanceof SoleTwist) {
+                    queueSoleTwist(twist);
                 } else {
                     meanTwistQueue.add((MeanTwist) twist);
                 }
@@ -61,6 +65,8 @@ public class TwistLocks {
                 if (evilTwist == null || evilTwist.isComplete()) {
                     evilTwist = (EvilTwist) twist;
                     return checkSoleTwist(twist);
+                } else if (twist instanceof SoleTwist) {
+                    queueSoleTwist(twist);
                 } else {
                     evilTwistQueue.add((EvilTwist) twist);
                 }
@@ -69,6 +75,8 @@ public class TwistLocks {
                 if (weirdTwist == null || weirdTwist.isComplete()) {
                     weirdTwist = (WeirdTwist) twist;
                     return checkSoleTwist(twist);
+                } else if (twist instanceof SoleTwist) {
+                    queueSoleTwist(twist);
                 } else {
                     weirdTwistQueue.add((WeirdTwist) twist);
                 }
@@ -86,9 +94,7 @@ public class TwistLocks {
                 soleTwistRunning = true;
                 runningTwists++;
             } else {
-                soleTwistQueue.add((SoleTwist) twist);
-                queuedTwists++;
-                queuedSoleTwists++;
+                queueSoleTwist(twist);
                 return false;
             }
         } else {
@@ -96,6 +102,12 @@ public class TwistLocks {
             runningTwists++;
         }
         return true;
+    }
+
+    private void queueSoleTwist(Twist twist) {
+        soleTwistQueue.add((SoleTwist) twist);
+        queuedTwists++;
+        queuedSoleTwists++;
     }
 
     public void escapePlayer(Player p) {
