@@ -14,6 +14,7 @@ import me.dordsor21.MissionGameAware.twists.WhatSimonSays.PlaceBlock;
 import me.dordsor21.MissionGameAware.twists.WhatSimonSays.WhatSimonSays;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
@@ -26,10 +27,11 @@ import java.util.function.Supplier;
 
 public class SimonSaysFunBoxTime extends EvilTwist implements SoleTwist {
 
+    public static final List<Player> escaped = new ArrayList<>();
     private static final List<Supplier<WhatSimonSays>> whatSimonsSayses = Arrays
         .asList(Jump::new, FlyNESW::new, Jump::new, LookDown::new, LookNESW::new, LookUp::new, PlaceBlock::new,
             HoldItem::new, ChangeDoWhatSimonSays::new);
-    public static final List<Player> escaped = new ArrayList<>();
+    public static Location funBoxLoc = null;
     private boolean doWhatSimonSays = true;
     private SimonSaysTimer t = null;
     private BukkitTask r = null;
@@ -43,6 +45,7 @@ public class SimonSaysFunBoxTime extends EvilTwist implements SoleTwist {
 
     @Override
     public void start() {
+        funBoxLoc = new Location(Bukkit.getWorld("world"), 100, 100, 100);
         escaped.clear();
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (escaped.contains(p)) {

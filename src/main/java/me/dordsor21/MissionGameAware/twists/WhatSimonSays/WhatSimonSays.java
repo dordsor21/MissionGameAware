@@ -3,7 +3,9 @@ package me.dordsor21.MissionGameAware.twists.WhatSimonSays;
 import me.dordsor21.MissionGameAware.MissionGameAware;
 import me.dordsor21.MissionGameAware.twists.impl.SimonSaysFunBoxTime;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -21,7 +23,27 @@ public interface WhatSimonSays {
                 if (SimonSaysFunBoxTime.escaped.contains(p)) {
                     continue;
                 }
-                p.sendTitle("Failed!", "", 0, 40, 10);
+                if (!p.hasMetadata("wssFailed")) {
+                    p.setMetadata("wssFailed", new FixedMetadataValue(MissionGameAware.plugin, 1));
+                    p.sendTitle("Failed! 1/3 in a row...", "", 0, 40, 10);
+                } else {
+                    int failed = p.getMetadata("wssFailed").get(0).asInt();
+                    if (failed == 2) {
+                        p.removeMetadata("wssFailed", MissionGameAware.plugin);
+                        p.setMetadata("wssFailed", new FixedMetadataValue(MissionGameAware.plugin, 2));
+                        p.sendTitle("Failed! 2/3 in a row...", "", 0, 40, 10);
+                        return;
+                    }
+                    p.removeMetadata("wssFailed", MissionGameAware.plugin);
+                    p.sendTitle("You failed 3 in a row! Meet the funbox!", "", 0, 40, 10);
+                    final Location back = p.getLocation().clone();
+                    Bukkit.getScheduler().runTaskLater(MissionGameAware.plugin, () -> {
+                        p.teleport(SimonSaysFunBoxTime.funBoxLoc);
+                    }, 10L);
+                    Bukkit.getScheduler().runTaskLater(MissionGameAware.plugin, () -> {
+                        p.teleport(back);
+                    }, 10 * 20L);
+                }
             }
         });
     }
@@ -43,6 +65,9 @@ public interface WhatSimonSays {
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (SimonSaysFunBoxTime.escaped.contains(p)) {
                 continue;
+            }
+            if (p.hasMetadata("wssFailed")) {
+                p.removeMetadata("wssFailed", MissionGameAware.plugin);
             }
             if (playersWhoDid.contains(p) != value) {
                 fail.add(p);

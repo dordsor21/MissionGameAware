@@ -52,6 +52,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -60,6 +61,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -354,7 +356,57 @@ public class SurvivalChallenge extends Challenge {
                 }
             }
             challenges = Executors.newSingleThreadScheduledExecutor()
-                .schedule(new ChallengeSelect(), Math.round(60 + 240 * Math.random()), TimeUnit.MINUTES);
+                .schedule(new ChallengeSelect(), Math.round(60 + 240 * Math.random()), TimeUnit.SECONDS);
+        }
+    }
+
+
+    private static final class DeathListener implements Listener {
+
+        @EventHandler
+        public void onRespawn(PlayerRespawnEvent e) {
+            final Player p = e.getPlayer();
+            p.sendTitle(ChatColor.translateAlternateColorCodes('&', "You died! You will remain in spectator for 1 minute."),
+                "", 0, 70, 20);
+            p.setGameMode(GameMode.SPECTATOR);
+            Bukkit.getScheduler().runTaskLater(MissionGameAware.plugin, () -> {
+                Location l = p.getLocation();
+                Block b = l.getBlock();
+                if (b.isEmpty()) {
+                    //int y = 0;
+                    for (int y = l.getBlockY(); y > 0; y--) {
+                        if (testLoc(p, l, b, y)) {
+                            return;
+                        }
+                    }
+                } else {
+                    for (int y = l.getBlockY(); y < 255; y++) {
+                        if (testLoc(p, l, b, y)) {
+                            return;
+                        }
+                    }
+                }
+                p.setGameMode(GameMode.SURVIVAL);
+            }, 60 * 20L);
+        }
+
+        private boolean testLoc(Player p, Location l, Block b, int y) {
+            int rel = y - l.getBlockY();
+            if (!b.getRelative(0, rel - 1, 0).isEmpty() && b.getRelative(0, rel, 0).isEmpty() && b.getRelative(0, rel + 1, 0)
+                .isEmpty()) {
+                p.setGameMode(GameMode.SURVIVAL);
+                l.setY(y);
+                p.teleport(l);
+                return true;
+            }
+            return false;
+        }
+
+        @EventHandler
+        public void onSpecTeleport(PlayerTeleportEvent e) {
+            if (e.getCause() == PlayerTeleportEvent.TeleportCause.SPECTATE) {
+                e.setCancelled(true);
+            }
         }
     }
 }

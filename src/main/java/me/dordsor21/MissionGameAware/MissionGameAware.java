@@ -67,7 +67,7 @@ public class MissionGameAware extends JavaPlugin implements Listener {
         } catch (RedisBusyException redisBusyException) {
             System.out.println("server_" + rand + " group already exists");
         }
-        poller = Executors.newSingleThreadScheduledExecutor().schedule(() -> {
+        poller = Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
             List<StreamMessage<String, String>> messages = syncCommands
                 .xreadgroup(Consumer.from("server_" + rand, "mga"), XReadArgs.StreamOffset.lastConsumed("just_giving"));
 
@@ -88,7 +88,7 @@ public class MissionGameAware extends JavaPlugin implements Listener {
                     queueTwists.incrementAndGet();
                 }
             }
-        }, 10L, TimeUnit.SECONDS);
+        }, 10L, 10L, TimeUnit.SECONDS);
     }
 
     @Override
