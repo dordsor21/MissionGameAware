@@ -10,6 +10,8 @@ import me.dordsor21.MissionGameAware.challenges.Survival.impl.Burn;
 import me.dordsor21.MissionGameAware.challenges.Survival.impl.CatchFish;
 import me.dordsor21.MissionGameAware.challenges.Survival.impl.ChickenEgg;
 import me.dordsor21.MissionGameAware.challenges.Survival.impl.CraftCake;
+import me.dordsor21.MissionGameAware.challenges.Survival.impl.Dance;
+import me.dordsor21.MissionGameAware.challenges.Survival.impl.DanceParty;
 import me.dordsor21.MissionGameAware.challenges.Survival.impl.FallDeath;
 import me.dordsor21.MissionGameAware.challenges.Survival.impl.GiveItem;
 import me.dordsor21.MissionGameAware.challenges.Survival.impl.GrowFarmFood;
@@ -21,6 +23,7 @@ import me.dordsor21.MissionGameAware.challenges.Survival.impl.KillRareMob;
 import me.dordsor21.MissionGameAware.challenges.Survival.impl.KillWither;
 import me.dordsor21.MissionGameAware.challenges.Survival.impl.MilkCow;
 import me.dordsor21.MissionGameAware.challenges.Survival.impl.Nether;
+import me.dordsor21.MissionGameAware.challenges.Survival.impl.SnipePlayer;
 import me.dordsor21.MissionGameAware.challenges.Survival.impl.SnowGolem;
 import me.dordsor21.MissionGameAware.challenges.Survival.impl.TameCat;
 import me.dordsor21.MissionGameAware.challenges.Survival.impl.TameWolf;
@@ -92,7 +95,7 @@ public class SurvivalChallenge extends Challenge {
         .asList(BedrockHurt.class, Breed.class, Burn.class, CatchFish.class, FallDeath.class, GiveItem.class,
             GrowFarmFood.class, GrowTree.class, KillCommonMob.class, KillPlayer.class, KillRareMob.class, Nether.class,
             ChickenEgg.class, CraftCake.class, IronGolem.class, MilkCow.class, KillWither.class, SnowGolem.class,
-            TameCat.class, TameWolf.class));
+            TameCat.class, TameWolf.class, Dance.class, DanceParty.class, SnipePlayer.class));
     private static final Location spawn = new Location(Bukkit.getWorld("world"), 100, 100, 100);
     private static final Set<Class<?>> run = new LinkedHashSet<>();
     private static ScheduledFuture<?> descr;
