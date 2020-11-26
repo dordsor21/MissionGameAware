@@ -30,13 +30,17 @@ public class NightDay extends MeanTwist {
     public void start() {
         escaped.clear();
         runner = Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                if (escaped.contains(p)) {
-                    continue;
+            try {
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    if (escaped.contains(p)) {
+                        continue;
+                    }
+                    p.setPlayerTime(day ? 6000L : 12000L, false);
                 }
-                p.setPlayerTime(day ? 6000L : 12000L, false);
+                day = !day;
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
-            day = !day;
         }, 0L, 5L, TimeUnit.SECONDS);
         t = Bukkit.getScheduler().runTaskLater(MissionGameAware.plugin, this::complete, 60 * 20L);
     }

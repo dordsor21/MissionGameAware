@@ -41,7 +41,6 @@ public class MissionGameAware extends JavaPlugin implements Listener {
     private static final AtomicInteger next100 = new AtomicInteger(0);
     public static MissionGameAware plugin;
     private RedisCommands<String, String> syncCommands = null;
-    private StatefulRedisConnection<String, String> connection = null;
     private ScheduledFuture<?> poller;
 
     @Override
@@ -59,7 +58,7 @@ public class MissionGameAware extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onServerUp(ServerLoadEvent e) {
-        connection = redis.connect();
+        StatefulRedisConnection<String, String> connection = redis.connect();
         syncCommands = connection.sync();
         try {
             syncCommands.xgroupCreate(XReadArgs.StreamOffset.from("just_giving", "0-0"), "server_" + rand,
@@ -68,25 +67,29 @@ public class MissionGameAware extends JavaPlugin implements Listener {
             System.out.println("server_" + rand + " group already exists");
         }
         poller = Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
-            List<StreamMessage<String, String>> messages = syncCommands
-                .xreadgroup(Consumer.from("server_" + rand, "mga"), XReadArgs.StreamOffset.lastConsumed("just_giving"));
+            try {
+                List<StreamMessage<String, String>> messages = syncCommands
+                    .xreadgroup(Consumer.from("server_" + rand, "mga"), XReadArgs.StreamOffset.lastConsumed("just_giving"));
 
-            double newAmount = 0;
-            for (StreamMessage<String, String> message : messages) {
-                if (message.getStream().equalsIgnoreCase("just_giving")) {
-                    Map<String, String> map = message.getBody();
-                    newAmount = Math.max(newAmount, Double.parseDouble(map.get("amount")));
-                    syncCommands.xdel("just_giving", message.getId());
+                double newAmount = 0;
+                for (StreamMessage<String, String> message : messages) {
+                    if (message.getStream().equalsIgnoreCase("just_giving")) {
+                        Map<String, String> map = message.getBody();
+                        newAmount = Math.max(newAmount, Double.parseDouble(map.get("amount")));
+                        syncCommands.xdel("just_giving", message.getId());
+                    }
+                    syncCommands.xack("just_giving", "server_" + rand, message.getId());
                 }
-                syncCommands.xack("just_giving", "server_" + rand, message.getId());
-            }
-            if (newAmount > next100.get()) {
-                next100.getAndAdd(100);
-                if (challengeHandler.isRunning()) {
-                    challengeHandler.getRunning().newTwist();
-                } else {
-                    queueTwists.incrementAndGet();
+                if (newAmount > next100.get()) {
+                    next100.getAndAdd(100);
+                    if (challengeHandler.isRunning()) {
+                        challengeHandler.getRunning().newTwist();
+                    } else {
+                        queueTwists.incrementAndGet();
+                    }
                 }
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
         }, 10L, 10L, TimeUnit.SECONDS);
     }
