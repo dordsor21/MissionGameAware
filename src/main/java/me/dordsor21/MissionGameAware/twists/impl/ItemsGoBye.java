@@ -19,6 +19,7 @@ public class ItemsGoBye extends WeirdTwist implements SoleTwist {
 
     @Override
     public void start() {
+        System.out.println(this.getClass().getSimpleName() + " twist started.");
         Bukkit.getPluginManager().registerEvents((listener = new ItemsGoByeListener()), MissionGameAware.plugin);
         Bukkit.getScheduler().runTaskLater(MissionGameAware.plugin, this::complete, 20 * 20L);
     }

@@ -21,6 +21,7 @@ public class AnEffect extends MeanTwist {
 
     @Override
     public void start() {
+        System.out.println(this.getClass().getSimpleName() + " twist started.");
         String[] str = Lists.SomeEffects.values()[new Random().nextInt(Lists.SomeEffects.values().length)].name().split("_");
         type = PotionEffectType.getByName(str[0].replace("USCR", "_"));
         Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {

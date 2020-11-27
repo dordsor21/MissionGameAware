@@ -26,6 +26,7 @@ public class TeleportAbout extends EvilTwist {
 
     @Override
     public void start() {
+        System.out.println(this.getClass().getSimpleName() + " twist started.");
         for (Player p : Bukkit.getOnlinePlayers()) {
             initial.put(p, p.getLocation().clone());
         }

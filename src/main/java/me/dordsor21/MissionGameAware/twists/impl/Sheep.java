@@ -42,6 +42,7 @@ public class Sheep extends WeirdTwist implements SoleTwist {
 
     @Override
     public void start() {
+        System.out.println(this.getClass().getSimpleName() + " twist started.");
         t = new Thread(() -> {
             try {
                 for (Player p : Bukkit.getOnlinePlayers()) {

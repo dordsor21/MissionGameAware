@@ -24,6 +24,7 @@ public class LaserFocus extends MeanTwist {
 
     @Override
     public void start() {
+        System.out.println(this.getClass().getSimpleName() + " twist started.");
         escaped.clear();
         Bukkit.getScheduler().runTaskLater(MissionGameAware.plugin, this::complete, 400L);
         final HashMap<UUID, BlockStareEntry> stareMap = new HashMap<>();

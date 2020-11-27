@@ -14,6 +14,7 @@ public class Cookies extends MeanTwist {
 
     @Override
     public void start() {
+        System.out.println(this.getClass().getSimpleName() + " twist started.");
         for (Player p : Bukkit.getOnlinePlayers()) {
             ItemStack[] contents = p.getInventory().getContents();
             for (int i = 0; i < contents.length; i++) {

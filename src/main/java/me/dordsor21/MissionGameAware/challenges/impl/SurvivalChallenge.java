@@ -67,6 +67,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.RenderType;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
@@ -105,15 +106,16 @@ public class SurvivalChallenge extends Challenge {
             GrowFarmFood.class, GrowTree.class, KillCommonMob.class, KillPlayer.class, KillRareMob.class, Nether.class,
             ChickenEgg.class, CraftCake.class, IronGolem.class, MilkCow.class, KillWither.class, SnowGolem.class,
             TameCat.class, TameWolf.class, Dance.class, DanceParty.class, SnipePlayer.class));
-    private static final Location spawn = new Location(Bukkit.getWorld("world"), 100, 100, 100);
     private static final Set<Class<?>> run = new LinkedHashSet<>();
     private static final List<Location> chests = new ArrayList<>();
     private static final Set<Player> inScoreboard = new HashSet<>();
+    private static Location spawn = null;
     private static ScheduledFuture<?> descr;
     private static ScheduledFuture<?> challenges;
     private static ScheduledFuture<?> scoreboardRunner;
     private static ScheduledFuture<?> doChests;
     private static List<Player> top5 = new ArrayList<>();
+    private static List<Player> deadWhenDone = new ArrayList<>();
     private static Player pvpwinner = null;
     private static PVPListener pvpListener;
     private static DeathListener deathListener;
@@ -166,6 +168,7 @@ public class SurvivalChallenge extends Challenge {
             MissionGameAware.plugin.getTwistLocks().queueTwist(twists.get(r.nextInt(twists.size())).get());
         }
         descrStage.set(0);
+        spawn = new Location(Bukkit.getWorld("world"), 4.5, 68, -94.5, 0, 0);
         final World w = Bukkit.getWorld("world");
         chests.addAll(Arrays
             .asList(new Location(w, -234, 62, -315), new Location(w, -182, 62, 148), new Location(w, 307, 62, -231),
@@ -175,7 +178,7 @@ public class SurvivalChallenge extends Challenge {
                 new Location(w, 0, 64, 920), new Location(w, 460, 77, 1065), new Location(w, -744, 62, -772),
                 new Location(w, -699, 78, -334)));
         descr = Executors.newSingleThreadScheduledExecutor()
-            .scheduleAtFixedRate(new SurvivalDescribe(), 5L, 5L, TimeUnit.SECONDS);
+            .scheduleAtFixedRate(new SurvivalDescribe(), 1L, 5L, TimeUnit.SECONDS);
     }
 
     private static final class SurvivalDescribe implements Runnable {
@@ -202,20 +205,20 @@ public class SurvivalChallenge extends Challenge {
                             break;
                         case 5:
                             for (Player p : Bukkit.getOnlinePlayers()) {
-                                p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&4Challenge 1: &fPVP."), 0, 70,
+                                p.sendTitle(ChatColor.translateAlternateColorCodes('&', "&4Challenge 1: &fPVP."), "", 0, 70,
                                     20);
                             }
                             break;
                         case 6:
                             for (Player p : Bukkit.getOnlinePlayers()) {
-                                p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&4Top 5 prize: Escape a Twist"),
-                                    0, 70, 20);
+                                p.sendTitle(ChatColor.translateAlternateColorCodes('&', "&4Top 5 prize: &fEscape a Twist"),
+                                    "", 0, 70, 20);
                             }
                             break;
                         case 7:
                             for (Player p : Bukkit.getOnlinePlayers()) {
-                                p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&4Top prize: Totem of Undying"),
-                                    0, 70, 20);
+                                p.sendTitle(ChatColor.translateAlternateColorCodes('&', "&4Top prize: &fTotem of Undying"),
+                                    "", 0, 70, 20);
                             }
                             break;
                         case 8:
@@ -226,11 +229,12 @@ public class SurvivalChallenge extends Challenge {
                                 }
                                 i++;
                                 Score score = objective.getScore(p.getName());
+                                objective.setRenderType(RenderType.HEARTS);
                                 inScoreboard.add(p);
                                 score.setScore(1);
                             }
                             for (Player p : Bukkit.getOnlinePlayers()) {
-                                p.teleport(new Location(Bukkit.getWorld("pvp"), 100, 100, 100));
+                                p.teleport(new Location(Bukkit.getWorld("pvp"), 156, 4, 335));
                                 p.setScoreboard(scoreboard);
                             }
                             break;
@@ -240,39 +244,58 @@ public class SurvivalChallenge extends Challenge {
                                 try {
                                     Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
                                         for (Player p : Bukkit.getOnlinePlayers()) {
-                                            p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&55"), 0, 70, 20);
+                                            p.sendTitle(ChatColor.translateAlternateColorCodes('&', "&55"), "", 0, 70, 20);
+                                            p.getInventory().clear();
+                                            p.getInventory().addItem(new ItemStack(Material.IRON_HELMET, 1));
+                                            p.getInventory().addItem(new ItemStack(Material.IRON_CHESTPLATE, 1));
+                                            p.getInventory().addItem(new ItemStack(Material.IRON_LEGGINGS, 1));
+                                            p.getInventory().addItem(new ItemStack(Material.IRON_BOOTS, 1));
+                                            p.getInventory().addItem(new ItemStack(Material.IRON_SWORD, 1));
+                                            p.getInventory().addItem(new ItemStack(Material.IRON_AXE, 1));
+                                            p.getInventory().addItem(new ItemStack(Material.COOKED_BEEF, 64));
+                                            p.getInventory().addItem(new ItemStack(Material.BOW, 1));
+                                            p.getInventory().addItem(new ItemStack(Material.CROSSBOW, 1));
+                                            p.getInventory().addItem(new ItemStack(Material.ARROW, 128));
                                         }
                                     });
                                     Thread.sleep(1000L);
                                     Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
                                         for (Player p : Bukkit.getOnlinePlayers()) {
-                                            p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&24"), 0, 70, 20);
+                                            p.sendTitle(ChatColor.translateAlternateColorCodes('&', "&24"), "", 0, 70, 20);
                                         }
                                     });
                                     Thread.sleep(1000L);
                                     Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
                                         for (Player p : Bukkit.getOnlinePlayers()) {
-                                            p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&13"), 0, 70, 20);
+                                            p.sendTitle(ChatColor.translateAlternateColorCodes('&', "&13"), "", 0, 70, 20);
                                         }
                                     });
                                     Thread.sleep(1000L);
                                     Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
                                         for (Player p : Bukkit.getOnlinePlayers()) {
-                                            p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&32"), 0, 70, 20);
+                                            p.sendTitle(ChatColor.translateAlternateColorCodes('&', "&32"), "", 0, 70, 20);
                                         }
                                     });
                                     Thread.sleep(1000L);
                                     Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
                                         for (Player p : Bukkit.getOnlinePlayers()) {
-                                            p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&f1"), 0, 70, 20);
+                                            p.sendTitle(ChatColor.translateAlternateColorCodes('&', "&f1"), "", 0, 70, 20);
                                         }
                                     });
                                     Thread.sleep(1000L);
                                     Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
                                         for (Player p : Bukkit.getOnlinePlayers()) {
-                                            p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&4Battle!"), 0, 70,
+                                            p.sendTitle(ChatColor.translateAlternateColorCodes('&', "&4Battle!"), "", 0, 70,
                                                 20);
                                         }
+                                        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),
+                                            "rg flag pvp_area -w pvp  pvp allow");
+                                        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),
+                                            "rg flag spawnspawn -w world exit allow");
+                                        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),
+                                            "rg reload");
+                                        Bukkit.getServer()
+                                            .dispatchCommand(Bukkit.getConsoleSender(), "gamerule keepInventory true");
                                     });
                                     players.addAll(Bukkit.getOnlinePlayers());
                                     for (Player p : Bukkit.getOnlinePlayers()) {
@@ -324,7 +347,7 @@ public class SurvivalChallenge extends Challenge {
                 objective.setDisplayName("\u00A74Final 5!");
                 top5 = new ArrayList<>(players);
                 for (Player p : Bukkit.getOnlinePlayers()) {
-                    p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&4Final 5!"), 0, 70, 20);
+                    p.sendTitle(ChatColor.translateAlternateColorCodes('&', "&4Final 5!"), "", 0, 70, 20);
                 }
             }
             if (players.size() == 1) {
@@ -333,9 +356,9 @@ public class SurvivalChallenge extends Challenge {
                 new Thread(() -> {
                     Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
                         for (Player p : Bukkit.getOnlinePlayers()) {
-                            p.sendTitle("", ChatColor
-                                    .translateAlternateColorCodes('&', "&6Winner! &f Congratulations &5" + pvpwinner.getName()),
-                                0, 70, 20);
+                            p.sendTitle(ChatColor.translateAlternateColorCodes('&', "&6We have a winner!"),
+                                ChatColor.translateAlternateColorCodes('&', "&fCongratulations &5" + pvpwinner.getName()), 0,
+                                70, 20);
                         }
                     });
                     try {
@@ -345,6 +368,11 @@ public class SurvivalChallenge extends Challenge {
                     }
                     Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
                         for (Player p : Bukkit.getOnlinePlayers()) {
+                            if (p.isDead()) {
+                                deadWhenDone.add(p);
+                                continue;
+                            }
+                            p.getInventory().clear();
                             p.setGameMode(GameMode.SURVIVAL);
                             p.teleport(spawn);
                             p.sendTitle("", ChatColor.translateAlternateColorCodes('&',
@@ -371,17 +399,43 @@ public class SurvivalChallenge extends Challenge {
                         .scheduleAtFixedRate(new DoChests(), 6L, 6L, TimeUnit.MINUTES);
                     scoreboardRunner = Executors.newSingleThreadScheduledExecutor()
                         .scheduleAtFixedRate(new ScoreboardUpdate(), 10L, 10L, TimeUnit.SECONDS);
-                    deathListener = new DeathListener();
+                    Bukkit.getPluginManager().registerEvents(deathListener = new DeathListener(), MissionGameAware.plugin);
                     Bukkit.getPluginManager().registerEvents(new TwistListener(), MissionGameAware.plugin);
                     objective.setDisplayName("\u00A74Top 15");
+                    objective.setRenderType(RenderType.INTEGER);
                 }).start();
             }
         }
 
         @EventHandler
         public void onRespawn(PlayerRespawnEvent event) {
-            event.getPlayer().teleport(new Location(Bukkit.getWorld("pvp"), 100, 100, 100));
-            event.getPlayer().setGameMode(GameMode.SPECTATOR);
+            if (players.size() > 1) {
+                event.getPlayer().teleport(new Location(Bukkit.getWorld("pvp"), 156, 4, 335));
+                event.getPlayer().setGameMode(GameMode.SPECTATOR);
+            } else {
+                Player p = event.getPlayer();
+                p.getInventory().clear();
+                p.setGameMode(GameMode.SURVIVAL);
+                p.teleport(spawn);
+                p.sendTitle("", ChatColor
+                        .translateAlternateColorCodes('&', "&fTake 5 minutes to explore, and then the challenges begin!"), 0, 70,
+                    20);
+                if (top5.contains(p)) {
+                    ItemStack namedSnowball = new ItemStack(Material.SNOWBALL);
+                    ItemMeta meta = namedSnowball.getItemMeta();
+                    meta.setDisplayName("Escape a Twist");
+                    meta.setLore(lore);
+                    namedSnowball.setItemMeta(meta);
+                    p.getInventory().addItem(namedSnowball);
+                    ItemStack diamonds = new ItemStack(Material.DIAMOND, 16);
+                    p.getInventory().addItem(diamonds);
+                }
+                if (pvpwinner.equals(p)) {
+                    p.getInventory().addItem(new ItemStack(Material.TOTEM_OF_UNDYING, 1));
+                    p.getInventory().addItem(new ItemStack(Material.DIAMOND, 16));
+                    pvpwinner.getInventory().addItem(new ItemStack(Material.EXPERIENCE_BOTTLE, 32));
+                }
+            }
         }
 
         @EventHandler
@@ -469,6 +523,33 @@ public class SurvivalChallenge extends Challenge {
         @EventHandler
         public void onRespawn(PlayerRespawnEvent e) {
             final Player p = e.getPlayer();
+            System.out.println("a");
+            if (deadWhenDone.contains(p)) {
+                System.out.println("a");
+                p.getInventory().clear();
+                p.setGameMode(GameMode.SURVIVAL);
+                p.teleport(spawn);
+                p.sendTitle("", ChatColor
+                        .translateAlternateColorCodes('&', "&fTake 5 minutes to explore, and then the challenges begin!"), 0, 70,
+                    20);
+                if (top5.contains(p)) {
+                    ItemStack namedSnowball = new ItemStack(Material.SNOWBALL);
+                    ItemMeta meta = namedSnowball.getItemMeta();
+                    meta.setDisplayName("Escape a Twist");
+                    meta.setLore(lore);
+                    namedSnowball.setItemMeta(meta);
+                    p.getInventory().addItem(namedSnowball);
+                    ItemStack diamonds = new ItemStack(Material.DIAMOND, 16);
+                    p.getInventory().addItem(diamonds);
+                }
+                if (pvpwinner.equals(p)) {
+                    p.getInventory().addItem(new ItemStack(Material.TOTEM_OF_UNDYING, 1));
+                    p.getInventory().addItem(new ItemStack(Material.DIAMOND, 16));
+                    pvpwinner.getInventory().addItem(new ItemStack(Material.EXPERIENCE_BOTTLE, 32));
+                }
+                deadWhenDone.remove(p);
+                return;
+            }
             p.sendTitle(ChatColor.translateAlternateColorCodes('&', "You died! You will remain in spectator for 1 minute."),
                 "", 0, 70, 20);
             p.setGameMode(GameMode.SPECTATOR);

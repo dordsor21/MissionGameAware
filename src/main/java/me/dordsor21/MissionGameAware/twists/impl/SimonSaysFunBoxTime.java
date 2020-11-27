@@ -45,6 +45,7 @@ public class SimonSaysFunBoxTime extends EvilTwist implements SoleTwist {
 
     @Override
     public void start() {
+        System.out.println(this.getClass().getSimpleName() + " twist started.");
         funBoxLoc = new Location(Bukkit.getWorld("world"), 100, 100, 100);
         escaped.clear();
         for (Player p : Bukkit.getOnlinePlayers()) {

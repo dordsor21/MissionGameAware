@@ -25,6 +25,7 @@ public class Lightning extends WeirdTwist {
 
     @Override
     public void start() {
+        System.out.println(this.getClass().getSimpleName() + " twist started.");
         escaped.clear();
         Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
             for (Player p : Bukkit.getOnlinePlayers()) {

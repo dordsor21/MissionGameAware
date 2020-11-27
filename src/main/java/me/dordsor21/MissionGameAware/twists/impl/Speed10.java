@@ -38,6 +38,7 @@ public class Speed10 extends EvilTwist {
 
     @Override
     public void start() {
+        System.out.println(this.getClass().getSimpleName() + " twist started.");
         escaped.clear();
         Bukkit.getScheduler().runTask(MissionGameAware.plugin,
             () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "perms group group set byteutil.speeder false"));

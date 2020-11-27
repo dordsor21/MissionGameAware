@@ -40,6 +40,7 @@ public class ManyMobs extends EvilTwist {
 
     @Override
     public void start() {
+        System.out.println(this.getClass().getSimpleName() + " twist started.");
         type = EntityType
             .valueOf(Lists.EnemyOkayToSpawn.values()[new Random().nextInt(Lists.EnemyOkayToSpawn.values().length)].name());
         for (Player p : Bukkit.getOnlinePlayers()) {

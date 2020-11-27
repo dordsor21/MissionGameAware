@@ -26,6 +26,7 @@ public class BlindnessTeleport extends MeanTwist {
 
     @Override
     public void start() {
+        System.out.println(this.getClass().getSimpleName() + " twist started.");
         escaped.clear();
         t = new Thread(() -> {
             try (final Twist twist = BlindnessTeleport.this) {

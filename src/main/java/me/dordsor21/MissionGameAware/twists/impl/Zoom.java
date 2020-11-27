@@ -30,6 +30,7 @@ public class Zoom extends MeanTwist {
 
     @Override
     public void start() {
+        System.out.println(this.getClass().getSimpleName() + " twist started.");
         escaped.clear();
         Runnable r = new ZoomRunnable();
         r.run();

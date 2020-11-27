@@ -25,6 +25,7 @@ public class LookUp extends MeanTwist {
 
     @Override
     public void start() {
+        System.out.println(this.getClass().getSimpleName() + " twist started.");
         escaped.clear();
         for (Player p : Bukkit.getOnlinePlayers()) {
             p.sendTitle(ChatColor.translateAlternateColorCodes('&', "&3Look &lUP"), "", 0, 70, 20);

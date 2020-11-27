@@ -31,6 +31,7 @@ public class PumpkinHead extends MeanTwist {
 
     @Override
     public void start() {
+        System.out.println(this.getClass().getSimpleName() + " twist started.");
         escaped.clear();
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (escaped.contains(p)) {

@@ -28,6 +28,7 @@ public class NightDay extends MeanTwist {
 
     @Override
     public void start() {
+        System.out.println(this.getClass().getSimpleName() + " twist started.");
         escaped.clear();
         runner = Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
             try {

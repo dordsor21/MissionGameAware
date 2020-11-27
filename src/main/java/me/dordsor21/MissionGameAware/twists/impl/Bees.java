@@ -35,6 +35,7 @@ public class Bees extends WeirdTwist implements SoleTwist {
 
     @Override
     public void start() {
+        System.out.println(this.getClass().getSimpleName() + " twist started.");
         t = new Thread(() -> {
             try (Twist twist = Bees.this) {
                 for (Player p : Bukkit.getOnlinePlayers()) {

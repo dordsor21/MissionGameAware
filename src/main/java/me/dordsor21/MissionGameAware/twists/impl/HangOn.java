@@ -20,6 +20,7 @@ public class HangOn extends EvilTwist implements SoleTwist {
 
     @Override
     public void start() {
+        System.out.println(this.getClass().getSimpleName() + " twist started.");
         Map<Player, Location> locs = new HashMap<>();
         for (Player p : Bukkit.getOnlinePlayers()) {
             p.sendTitle(ChatColor.translateAlternateColorCodes('&', "Hang on for a second..."), "", 0, 70, 20);
