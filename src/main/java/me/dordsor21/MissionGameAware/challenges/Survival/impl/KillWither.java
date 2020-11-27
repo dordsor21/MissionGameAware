@@ -19,9 +19,9 @@ import java.util.Set;
 public class KillWither extends SingleChallenge {
 
     private static final String[] messages =
-        new String[] {"Kill a &cwither&f. You have until the end of the Survival challenge.",
-            "You have until the end of the Survival challenge to kill a &cwither&f.",
-            "Kill a &cwither&f by the end of the Survival challenge."};
+        new String[] {"Kill a &cwither&f to earn 15 points. You have until the end of the Survival challenge.",
+            "You have until the end of the Survival challenge to kill a &cwither&f and earn 15 points.",
+            "Kill a &cwither&f by the end of the Survival challenge to earn 15 points."};
     private final KillMobListener listener;
 
     public KillWither() {
@@ -49,7 +49,7 @@ public class KillWither extends SingleChallenge {
                 Player p = e.getEntity().getKiller();
                 if (!completed.contains(p)) {
                     completed.add(p);
-                    SurvivalChallenge.playerScores.merge(p, 1, Integer::sum);
+                    SurvivalChallenge.playerScores.merge(p, 15, Integer::sum);
                     p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "Point obtained!"), 0, 70, 20);
                 }
             }

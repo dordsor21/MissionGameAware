@@ -1,12 +1,15 @@
 package me.dordsor21.MissionGameAware.command;
 
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.block.Block;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Score;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
 
 public class SurvChallengeCommand implements CommandExecutor {
     @Override
@@ -14,36 +17,22 @@ public class SurvChallengeCommand implements CommandExecutor {
         if (!sender.hasPermission("mga.queue")) {
             return true;
         }
-        Player p = (Player) sender;
-        Location l = p.getLocation();
-        Block b = l.getBlock();
-        if (b.isEmpty()) {
-            //int y = 0;
-            for (int y = l.getBlockY(); y > 0; y--) {
-                if (testLoc(p, l, b, y)) {
-                    return true;
-                }
+        ScoreboardManager manager = Bukkit.getScoreboardManager();
+        final Scoreboard scoreboard = manager.getNewScoreboard();
+        final Objective objective = scoreboard.registerNewObjective("alive", "hasNotDied", "\u00A74Alive");
+        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+        int i = 1;
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (i > 15) {
+                break;
             }
-        } else {
-            for (int y = l.getBlockY(); y < 255; y++) {
-                if (testLoc(p, l, b, y)) {
-                    return true;
-                }
-            }
+            i++;
+            Score score = objective.getScore(p.getName());
+            score.setScore(1);
         }
-        p.setGameMode(GameMode.SURVIVAL);
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            p.setScoreboard(scoreboard);
+        }
         return true;
-    }
-
-    private boolean testLoc(Player p, Location l, Block b, int y) {
-        int rel = y - l.getBlockY();
-        if (!b.getRelative(0, rel - 1, 0).isEmpty() && b.getRelative(0, rel, 0).isEmpty() && b.getRelative(0, rel + 1, 0)
-            .isEmpty()) {
-            p.setGameMode(GameMode.SURVIVAL);
-            l.setY(y);
-            p.teleport(l);
-            return true;
-        }
-        return false;
     }
 }

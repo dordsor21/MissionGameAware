@@ -65,10 +65,16 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Score;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -102,13 +108,17 @@ public class SurvivalChallenge extends Challenge {
     private static final Location spawn = new Location(Bukkit.getWorld("world"), 100, 100, 100);
     private static final Set<Class<?>> run = new LinkedHashSet<>();
     private static final List<Location> chests = new ArrayList<>();
+    private static final Set<Player> inScoreboard = new HashSet<>();
     private static ScheduledFuture<?> descr;
     private static ScheduledFuture<?> challenges;
+    private static ScheduledFuture<?> scoreboardRunner;
     private static ScheduledFuture<?> doChests;
     private static List<Player> top5 = new ArrayList<>();
     private static Player pvpwinner = null;
     private static PVPListener pvpListener;
     private static DeathListener deathListener;
+    private static Scoreboard scoreboard = null;
+    private static Objective objective = null;
 
     static {
         lore.add("Throw me to escape a twist!");
@@ -131,6 +141,7 @@ public class SurvivalChallenge extends Challenge {
         this.isRunning = false;
         descr.cancel(true);
         challenges.cancel(true);
+        scoreboardRunner.cancel(true);
         doChests.cancel(true);
         for (SurvChallenge challenge : running) {
             challenge.finish();
@@ -146,6 +157,10 @@ public class SurvivalChallenge extends Challenge {
     @Override
     public void run() {
         this.isRunning = true;
+        ScoreboardManager manager = Bukkit.getScoreboardManager();
+        scoreboard = manager.getNewScoreboard();
+        objective = scoreboard.registerNewObjective("alive", "hasNotDied", "\u00A74Alive");
+        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
         Random r = new Random();
         while (MissionGameAware.queueTwists.getAndDecrement() > 0) {
             MissionGameAware.plugin.getTwistLocks().queueTwist(twists.get(r.nextInt(twists.size())).get());
@@ -204,37 +219,61 @@ public class SurvivalChallenge extends Challenge {
                             }
                             break;
                         case 8:
+                            int i = 1;
+                            for (Player p : Bukkit.getOnlinePlayers()) {
+                                if (i > 15) {
+                                    break;
+                                }
+                                i++;
+                                Score score = objective.getScore(p.getName());
+                                inScoreboard.add(p);
+                                score.setScore(1);
+                            }
                             for (Player p : Bukkit.getOnlinePlayers()) {
                                 p.teleport(new Location(Bukkit.getWorld("pvp"), 100, 100, 100));
+                                p.setScoreboard(scoreboard);
                             }
                             break;
                         case 9:
                             descr.cancel(true);
                             Thread t = new Thread(() -> {
                                 try {
-                                    for (Player p : Bukkit.getOnlinePlayers()) {
-                                        p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&55"), 0, 70, 20);
-                                    }
+                                    Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
+                                        for (Player p : Bukkit.getOnlinePlayers()) {
+                                            p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&55"), 0, 70, 20);
+                                        }
+                                    });
                                     Thread.sleep(1000L);
-                                    for (Player p : Bukkit.getOnlinePlayers()) {
-                                        p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&24"), 0, 70, 20);
-                                    }
+                                    Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
+                                        for (Player p : Bukkit.getOnlinePlayers()) {
+                                            p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&24"), 0, 70, 20);
+                                        }
+                                    });
                                     Thread.sleep(1000L);
-                                    for (Player p : Bukkit.getOnlinePlayers()) {
-                                        p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&13"), 0, 70, 20);
-                                    }
+                                    Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
+                                        for (Player p : Bukkit.getOnlinePlayers()) {
+                                            p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&13"), 0, 70, 20);
+                                        }
+                                    });
                                     Thread.sleep(1000L);
-                                    for (Player p : Bukkit.getOnlinePlayers()) {
-                                        p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&32"), 0, 70, 20);
-                                    }
+                                    Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
+                                        for (Player p : Bukkit.getOnlinePlayers()) {
+                                            p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&32"), 0, 70, 20);
+                                        }
+                                    });
                                     Thread.sleep(1000L);
-                                    for (Player p : Bukkit.getOnlinePlayers()) {
-                                        p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&f1"), 0, 70, 20);
-                                    }
+                                    Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
+                                        for (Player p : Bukkit.getOnlinePlayers()) {
+                                            p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&f1"), 0, 70, 20);
+                                        }
+                                    });
                                     Thread.sleep(1000L);
-                                    for (Player p : Bukkit.getOnlinePlayers()) {
-                                        p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&4Battle!"), 0, 70, 20);
-                                    }
+                                    Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
+                                        for (Player p : Bukkit.getOnlinePlayers()) {
+                                            p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&4Battle!"), 0, 70,
+                                                20);
+                                        }
+                                    });
                                     players.addAll(Bukkit.getOnlinePlayers());
                                     for (Player p : Bukkit.getOnlinePlayers()) {
                                         playerScores.put(p, 0);
@@ -265,7 +304,24 @@ public class SurvivalChallenge extends Challenge {
 
         void handle(Player pl) {
             players.remove(pl);
+            if (inScoreboard.contains(pl)) {
+                scoreboard.resetScores(pl.getName());
+                if (players.size() > 15) {
+                    for (Player p : players) {
+                        if (!inScoreboard.contains(p)) {
+                            Score score = objective.getScore(p.getName());
+                            inScoreboard.add(p);
+                            score.setScore(1);
+                            for (Player player : Bukkit.getOnlinePlayers()) {
+                                player.setScoreboard(scoreboard);
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
             if (players.size() == 5) {
+                objective.setDisplayName("\u00A74Final 5!");
                 top5 = new ArrayList<>(players);
                 for (Player p : Bukkit.getOnlinePlayers()) {
                     p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&4Final 5!"), 0, 70, 20);
@@ -293,6 +349,7 @@ public class SurvivalChallenge extends Challenge {
                             p.teleport(spawn);
                             p.sendTitle("", ChatColor.translateAlternateColorCodes('&',
                                 "&fTake 5 minutes to explore, and then the challenges begin!"), 0, 70, 20);
+                            scoreboard.resetScores(p.getName());
                         }
                         pvpwinner.getInventory().addItem(new ItemStack(Material.TOTEM_OF_UNDYING, 1));
                         pvpwinner.getInventory().addItem(new ItemStack(Material.DIAMOND, 16));
@@ -312,8 +369,11 @@ public class SurvivalChallenge extends Challenge {
                         Executors.newSingleThreadScheduledExecutor().schedule(new ChallengeSelect(), 5L, TimeUnit.MINUTES);
                     doChests = Executors.newSingleThreadScheduledExecutor()
                         .scheduleAtFixedRate(new DoChests(), 6L, 6L, TimeUnit.MINUTES);
+                    scoreboardRunner = Executors.newSingleThreadScheduledExecutor()
+                        .scheduleAtFixedRate(new ScoreboardUpdate(), 10L, 10L, TimeUnit.SECONDS);
                     deathListener = new DeathListener();
                     Bukkit.getPluginManager().registerEvents(new TwistListener(), MissionGameAware.plugin);
+                    objective.setDisplayName("\u00A74Top 15");
                 }).start();
             }
         }
@@ -366,9 +426,8 @@ public class SurvivalChallenge extends Challenge {
             }
             Location chest = chests.remove(0);
             Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
-                Bukkit.broadcastMessage("\u00A76Treasure Chest \u00A7flocated near: " + (Math
-                    .round(chest.getBlockX() + (Math.random() - 0.5) * 20)) + "," + (Math
-                    .round(chest.getBlockZ() + (Math.random() - 0.5) * 20)));
+                Bukkit.broadcastMessage(
+                    "\u00A76Treasure Chest \u00A7flocated at: " + chest.getBlockX() + "," + chest.getBlockZ());
             });
         }
     }
@@ -451,6 +510,31 @@ public class SurvivalChallenge extends Challenge {
             if (e.getCause() == PlayerTeleportEvent.TeleportCause.SPECTATE) {
                 e.setCancelled(true);
             }
+        }
+    }
+
+
+    private static final class ScoreboardUpdate implements Runnable {
+
+        @Override
+        public void run() {
+            List<Map.Entry<Player, Integer>> list = new ArrayList<>(playerScores.entrySet());
+            list.sort(Map.Entry.comparingByValue());
+
+            Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
+                int i = 1;
+                for (Map.Entry<Player, Integer> entry : list) {
+                    if (i > 15) {
+                        break;
+                    }
+                    i++;
+                    Score score = objective.getScore(entry.getKey().getName());
+                    score.setScore(entry.getValue());
+                }
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    p.setScoreboard(scoreboard);
+                }
+            });
         }
     }
 }
