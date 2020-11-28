@@ -5,6 +5,7 @@ import me.dordsor21.MissionGameAware.twists.SoleTwist;
 import me.dordsor21.MissionGameAware.twists.Twist;
 import me.dordsor21.MissionGameAware.twists.WeirdTwist;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Bee;
 import org.bukkit.entity.EntityType;
@@ -38,6 +39,12 @@ public class Bees extends WeirdTwist implements SoleTwist {
         System.out.println(this.getClass().getSimpleName() + " twist started.");
         t = new Thread(() -> {
             try (Twist twist = Bees.this) {
+                Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
+                    for (Player p : Bukkit.getOnlinePlayers()) {
+                        p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&4Twist&f: " + this.getClass().getSimpleName()),
+                            0, 70, 20);
+                    }
+                });
                 for (Player p : Bukkit.getOnlinePlayers()) {
                     p.playSound(p.getLocation(), Sound.ENTITY_BEE_LOOP, 1.0f, 0.2f);
                     p.playSound(p.getLocation(), Sound.ENTITY_BEE_LOOP_AGGRESSIVE, 1.0f, 0.2f);

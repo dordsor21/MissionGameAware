@@ -4,6 +4,7 @@ import me.dordsor21.MissionGameAware.MissionGameAware;
 import me.dordsor21.MissionGameAware.twists.MeanTwist;
 import me.dordsor21.MissionGameAware.util.Lists;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -22,6 +23,12 @@ public class AnEffect extends MeanTwist {
     @Override
     public void start() {
         System.out.println(this.getClass().getSimpleName() + " twist started.");
+        Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&4Twist&f: " + this.getClass().getSimpleName()),
+                    0, 70, 20);
+            }
+        });
         String[] str = Lists.SomeEffects.values()[new Random().nextInt(Lists.SomeEffects.values().length)].name().split("_");
         type = PotionEffectType.getByName(str[0].replace("USCR", "_"));
         Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {

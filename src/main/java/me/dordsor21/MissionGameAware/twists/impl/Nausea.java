@@ -4,6 +4,7 @@ import me.dordsor21.MissionGameAware.MissionGameAware;
 import me.dordsor21.MissionGameAware.twists.EvilTwist;
 import me.dordsor21.MissionGameAware.twists.Twist;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -35,6 +36,8 @@ public class Nausea extends EvilTwist {
                 if (escaped.contains(p)) {
                     continue;
                 }
+                p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&4Twist&f: " + this.getClass().getSimpleName()),
+                    0, 70, 20);
                 p.addPotionEffect(PotionEffectType.CONFUSION.createEffect(300, 2));
             }
         });

@@ -3,6 +3,7 @@ package me.dordsor21.MissionGameAware.twists.impl;
 import me.dordsor21.MissionGameAware.MissionGameAware;
 import me.dordsor21.MissionGameAware.twists.EvilTwist;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -31,6 +32,12 @@ public class Speed02 extends EvilTwist {
     @Override
     public void start() {
         System.out.println(this.getClass().getSimpleName() + " twist started.");
+        Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&4Twist&f: " + this.getClass().getSimpleName()),
+                    0, 70, 20);
+            }
+        });
         escaped.clear();
         Bukkit.getScheduler().runTask(MissionGameAware.plugin,
             () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "perms group group set byteutil.speeder false"));

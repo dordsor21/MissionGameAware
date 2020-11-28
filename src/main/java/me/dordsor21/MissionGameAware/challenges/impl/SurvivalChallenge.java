@@ -163,10 +163,6 @@ public class SurvivalChallenge extends Challenge {
         scoreboard = manager.getNewScoreboard();
         objective = scoreboard.registerNewObjective("alive", "hasNotDied", "\u00A74Alive");
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-        Random r = new Random();
-        while (MissionGameAware.queueTwists.getAndDecrement() > 0) {
-            MissionGameAware.plugin.getTwistLocks().queueTwist(twists.get(r.nextInt(twists.size())).get());
-        }
         descrStage.set(0);
         spawn = new Location(Bukkit.getWorld("world"), 4.5, 68, -94.5, 0, 0);
         final World w = Bukkit.getWorld("world");
@@ -178,7 +174,7 @@ public class SurvivalChallenge extends Challenge {
                 new Location(w, 0, 64, 920), new Location(w, 460, 77, 1065), new Location(w, -744, 62, -772),
                 new Location(w, -699, 78, -334)));
         descr = Executors.newSingleThreadScheduledExecutor()
-            .scheduleAtFixedRate(new SurvivalDescribe(), 1L, 5L, TimeUnit.SECONDS);
+            .scheduleAtFixedRate(new SurvivalDescribe(), 1L, 4L, TimeUnit.SECONDS);
     }
 
     private static final class SurvivalDescribe implements Runnable {
@@ -189,39 +185,38 @@ public class SurvivalChallenge extends Challenge {
                 Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
                     switch (descrStage.get()) {
                         case 0:
-                            Bukkit.broadcastMessage("Welcome to the Survival Challenge");
+                            Bukkit.broadcastMessage("\u00A76Welcome to the Survival Challenge");
                             break;
                         case 1:
-                            Bukkit.broadcastMessage("10 Points win. 3 top 5.");
+                            Bukkit.broadcastMessage(
+                                "\u00A77The purpose of this challenge is to create your dream survival base, "
+                                    + "while surviving our \u00A74twists\u00A77 and completing \u00A73mini challenges\u00A77 that'll earn you points!");
                             break;
                         case 2:
-                            Bukkit.broadcastMessage("Message 2");
+                            Bukkit.broadcastMessage(
+                                "\u00A77Basic survival gear and creative blocks have been provided to you along with \u00A75portals\u00A77 at the \u00A72spawn\u00A77. "
+                                    + "You may find \u00A7cchests\u00A77 on your travels and coordinates for \u00A76treasure chests\u00A77 will be released over time."
+                                    + " Well worth collecting!");
                             break;
                         case 3:
-                            Bukkit.broadcastMessage("Message 3");
-                            break;
-                        case 4:
-                            Bukkit.broadcastMessage("Message 4");
-                            break;
-                        case 5:
                             for (Player p : Bukkit.getOnlinePlayers()) {
                                 p.sendTitle(ChatColor.translateAlternateColorCodes('&', "&4Challenge 1: &fPVP."), "", 0, 70,
                                     20);
                             }
                             break;
-                        case 6:
+                        case 4:
                             for (Player p : Bukkit.getOnlinePlayers()) {
                                 p.sendTitle(ChatColor.translateAlternateColorCodes('&', "&4Top 5 prize: &fEscape a Twist"),
                                     "", 0, 70, 20);
                             }
                             break;
-                        case 7:
+                        case 5:
                             for (Player p : Bukkit.getOnlinePlayers()) {
                                 p.sendTitle(ChatColor.translateAlternateColorCodes('&', "&4Top prize: &fTotem of Undying"),
                                     "", 0, 70, 20);
                             }
                             break;
-                        case 8:
+                        case 6:
                             int i = 1;
                             for (Player p : Bukkit.getOnlinePlayers()) {
                                 if (i > 15) {
@@ -238,8 +233,8 @@ public class SurvivalChallenge extends Challenge {
                                 p.setScoreboard(scoreboard);
                             }
                             break;
-                        case 9:
-                            descr.cancel(true);
+                        case 7:
+                            descr.cancel(false);
                             Thread t = new Thread(() -> {
                                 try {
                                     Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
@@ -283,6 +278,11 @@ public class SurvivalChallenge extends Challenge {
                                         }
                                     });
                                     Thread.sleep(1000L);
+                                    Random r = new Random();
+                                    while (MissionGameAware.queueTwists.getAndDecrement() > 0) {
+                                        MissionGameAware.plugin.getTwistLocks()
+                                            .queueTwist(twists.get(r.nextInt(twists.size())).get());
+                                    }
                                     Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
                                         for (Player p : Bukkit.getOnlinePlayers()) {
                                             p.sendTitle(ChatColor.translateAlternateColorCodes('&', "&4Battle!"), "", 0, 70,
@@ -292,10 +292,11 @@ public class SurvivalChallenge extends Challenge {
                                             "rg flag pvp_area -w pvp  pvp allow");
                                         Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),
                                             "rg flag spawnspawn -w world exit allow");
-                                        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),
-                                            "rg reload");
                                         Bukkit.getServer()
                                             .dispatchCommand(Bukkit.getConsoleSender(), "gamerule keepInventory true");
+                                        Bukkit.getScheduler().runTaskLater(MissionGameAware.plugin, () -> {
+                                            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "rg reload");
+                                        }, 5L);
                                     });
                                     players.addAll(Bukkit.getOnlinePlayers());
                                     for (Player p : Bukkit.getOnlinePlayers()) {
@@ -523,9 +524,7 @@ public class SurvivalChallenge extends Challenge {
         @EventHandler
         public void onRespawn(PlayerRespawnEvent e) {
             final Player p = e.getPlayer();
-            System.out.println("a");
             if (deadWhenDone.contains(p)) {
-                System.out.println("a");
                 p.getInventory().clear();
                 p.setGameMode(GameMode.SURVIVAL);
                 p.teleport(spawn);
@@ -550,7 +549,7 @@ public class SurvivalChallenge extends Challenge {
                 deadWhenDone.remove(p);
                 return;
             }
-            p.sendTitle(ChatColor.translateAlternateColorCodes('&', "You died! You will remain in spectator for 1 minute."),
+            p.sendTitle(ChatColor.translateAlternateColorCodes('&', "You died! You will remain in spectator for 30 seconds."),
                 "", 0, 70, 20);
             p.setGameMode(GameMode.SPECTATOR);
             Bukkit.getScheduler().runTaskLater(MissionGameAware.plugin, () -> {
@@ -571,7 +570,7 @@ public class SurvivalChallenge extends Challenge {
                     }
                 }
                 p.setGameMode(GameMode.SURVIVAL);
-            }, 60 * 20L);
+            }, 30 * 20L);
         }
 
         private boolean testLoc(Player p, Location l, Block b, int y) {

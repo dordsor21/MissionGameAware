@@ -35,6 +35,6 @@ public abstract class Challenge implements Runnable {
     }
 
     public enum Type {
-        PARKOUR, BUILD, SURVIVAL
+        PARKOUR, BUILD, SURVIVAL, MINIGAME
     }
 }

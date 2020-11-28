@@ -1,7 +1,9 @@
 package me.dordsor21.MissionGameAware.twists.impl;
 
+import me.dordsor21.MissionGameAware.MissionGameAware;
 import me.dordsor21.MissionGameAware.twists.MeanTwist;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -16,6 +18,8 @@ public class Cookies extends MeanTwist {
     public void start() {
         System.out.println(this.getClass().getSimpleName() + " twist started.");
         for (Player p : Bukkit.getOnlinePlayers()) {
+            p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&4Twist&f: " + this.getClass().getSimpleName()),
+                0, 70, 20);
             ItemStack[] contents = p.getInventory().getContents();
             for (int i = 0; i < contents.length; i++) {
                 contents[i] = new ItemStack(Material.COOKIE, 64);

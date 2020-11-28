@@ -14,6 +14,9 @@ commands:
   canceltwist:
     description: MissionGameAware.
     aliases: [ ct ]
+  stopchallenge:
+    description: MissionGameAware.
+    aliases: [ sc ]
   queuechallenge:
     description: MissionGameAware.
     aliases: [ qc ]

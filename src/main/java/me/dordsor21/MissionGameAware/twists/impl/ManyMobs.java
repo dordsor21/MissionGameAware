@@ -5,6 +5,7 @@ import me.dordsor21.MissionGameAware.MissionGameAware;
 import me.dordsor21.MissionGameAware.twists.EvilTwist;
 import me.dordsor21.MissionGameAware.util.Lists;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -43,22 +44,27 @@ public class ManyMobs extends EvilTwist {
         System.out.println(this.getClass().getSimpleName() + " twist started.");
         type = EntityType
             .valueOf(Lists.EnemyOkayToSpawn.values()[new Random().nextInt(Lists.EnemyOkayToSpawn.values().length)].name());
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            ArrayList<Entity> pentities = new ArrayList<>();
-            for (int x = -6; x <= 6; x += 6) {
-                for (int z = -6; z <= 6; z += 6) {
-                    int y = 8;
-                    while (y > 0 && p.getWorld().getBlockAt(x, p.getLocation().getBlockY() + y - 1, z).getType().isAir()) {
-                        y--;
+        Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&4Twist&f: " + this.getClass().getSimpleName()),
+                    0, 70, 20);
+                ArrayList<Entity> pentities = new ArrayList<>();
+                for (int x = -6; x <= 6; x += 6) {
+                    for (int z = -6; z <= 6; z += 6) {
+                        int y = 8;
+                        while (y > 0 && p.getWorld().getBlockAt(x, p.getLocation().getBlockY() + y - 1, z).getType()
+                            .isAir()) {
+                            y--;
+                        }
+                        Location l = p.getLocation().clone().add(x, y, z);
+                        Entity e = p.getWorld().spawnEntity(l, type);
+                        entities.add(e);
+                        pentities.add(e);
                     }
-                    Location l = p.getLocation().clone().add(x, y, z);
-                    Entity e = p.getWorld().spawnEntity(l, type);
-                    entities.add(e);
-                    pentities.add(e);
                 }
+                spawned.put(p, pentities);
             }
-            spawned.put(p, pentities);
-        }
+        });
         Bukkit.getPluginManager().registerEvents(listener = new MobMoveListener(), MissionGameAware.plugin);
         Bukkit.getScheduler().runTaskLater(MissionGameAware.plugin, () -> HandlerList.unregisterAll(listener), 5 * 20L);
         Bukkit.getScheduler().runTaskLater(MissionGameAware.plugin, this::complete, 10 * 20L);

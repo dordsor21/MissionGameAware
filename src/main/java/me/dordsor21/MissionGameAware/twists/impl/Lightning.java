@@ -3,6 +3,7 @@ package me.dordsor21.MissionGameAware.twists.impl;
 import me.dordsor21.MissionGameAware.MissionGameAware;
 import me.dordsor21.MissionGameAware.twists.WeirdTwist;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
@@ -32,6 +33,8 @@ public class Lightning extends WeirdTwist {
                 if (escaped.contains(p)) {
                     continue;
                 }
+                p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&4Twist&f: " + this.getClass().getSimpleName()),
+                    0, 70, 20);
                 p.getWorld().strikeLightningEffect(p.getLocation());
             }
         });

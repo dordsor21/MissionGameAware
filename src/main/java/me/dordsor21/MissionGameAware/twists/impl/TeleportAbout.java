@@ -27,6 +27,12 @@ public class TeleportAbout extends EvilTwist {
     @Override
     public void start() {
         System.out.println(this.getClass().getSimpleName() + " twist started.");
+        Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&4Twist&f: " + this.getClass().getSimpleName()),
+                    0, 70, 20);
+            }
+        });
         for (Player p : Bukkit.getOnlinePlayers()) {
             initial.put(p, p.getLocation().clone());
         }

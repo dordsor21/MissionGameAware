@@ -11,6 +11,7 @@ import io.lettuce.core.api.sync.RedisCommands;
 import me.dordsor21.MissionGameAware.command.ManualCancelCommand;
 import me.dordsor21.MissionGameAware.command.ManualQueueChallengeCommand;
 import me.dordsor21.MissionGameAware.command.ManualQueueCommand;
+import me.dordsor21.MissionGameAware.command.StopChallengeCommand;
 import me.dordsor21.MissionGameAware.command.SurvChallengeCommand;
 import me.dordsor21.MissionGameAware.util.ChallengeHandler;
 import me.dordsor21.MissionGameAware.util.RandomTwists;
@@ -51,6 +52,7 @@ public class MissionGameAware extends JavaPlugin implements Listener {
         this.getCommand("canceltwist").setExecutor(new ManualCancelCommand());
         this.getCommand("queuechallenge").setExecutor(new ManualQueueChallengeCommand());
         this.getCommand("survchallenge").setExecutor(new SurvChallengeCommand());
+        this.getCommand("stopchallenge").setExecutor(new StopChallengeCommand());
 
         Bukkit.getPluginManager().registerEvents(this, this);
         plugin = this;
@@ -81,7 +83,7 @@ public class MissionGameAware extends JavaPlugin implements Listener {
                     syncCommands.xack("just_giving", "server_" + rand, message.getId());
                 }
                 if (newAmount > next100.get()) {
-                    next100.getAndAdd(100);
+                    next100.getAndAdd(20);
                     if (challengeHandler.isRunning()) {
                         challengeHandler.getRunning().newTwist();
                     } else {

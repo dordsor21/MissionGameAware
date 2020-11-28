@@ -28,25 +28,29 @@ public class LaserFocus extends MeanTwist {
         escaped.clear();
         Bukkit.getScheduler().runTaskLater(MissionGameAware.plugin, this::complete, 400L);
         final HashMap<UUID, BlockStareEntry> stareMap = new HashMap<>();
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            if (escaped.contains(p)) {
-                continue;
+        Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                if (escaped.contains(p)) {
+                    continue;
+                }
+                p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&4Twist&f: " + this.getClass().getSimpleName()),
+                    0, 70, 20);
+                p.sendTitle(ChatColor.translateAlternateColorCodes('&', "&4Laser Focus"),
+                    ChatColor.translateAlternateColorCodes('&', "&fDon't stare at blocks too long..."), 0, 70, 20);
+                RayTraceResult r = p.rayTraceBlocks(100d, FluidCollisionMode.SOURCE_ONLY);
+                final int x, y, z;
+                if (r == null || r.getHitBlock() == null) {
+                    x = p.getLocation().getBlockX();
+                    y = p.getLocation().getBlockY();
+                    z = p.getLocation().getBlockZ();
+                } else {
+                    x = r.getHitBlock().getX();
+                    y = r.getHitBlock().getY();
+                    z = r.getHitBlock().getZ();
+                }
+                stareMap.put(p.getUniqueId(), new BlockStareEntry(x, y, z));
             }
-            p.sendTitle(ChatColor.translateAlternateColorCodes('&', "&4Laser Focus"),
-                ChatColor.translateAlternateColorCodes('&', "&fDon't stare at blocks too long..."), 0, 70, 20);
-            RayTraceResult r = p.rayTraceBlocks(100d, FluidCollisionMode.SOURCE_ONLY);
-            final int x, y, z;
-            if (r == null || r.getHitBlock() == null) {
-                x = p.getLocation().getBlockX();
-                y = p.getLocation().getBlockY();
-                z = p.getLocation().getBlockZ();
-            } else {
-                x = r.getHitBlock().getX();
-                y = r.getHitBlock().getY();
-                z = r.getHitBlock().getZ();
-            }
-            stareMap.put(p.getUniqueId(), new BlockStareEntry(x, y, z));
-        }
+        });
         t = new Thread(() -> {
             while (!cancelled.get()) {
                 long start = System.currentTimeMillis();

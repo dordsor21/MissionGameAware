@@ -4,6 +4,7 @@ import me.dordsor21.MissionGameAware.MissionGameAware;
 import me.dordsor21.MissionGameAware.twists.MeanTwist;
 import me.dordsor21.MissionGameAware.twists.Twist;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -34,6 +35,8 @@ public class RandomTeleport extends MeanTwist {
                             if (escaped.contains(p)) {
                                 continue;
                             }
+                            p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&4Twist&f: " + this.getClass().getSimpleName()),
+                                0, 70, 20);
                             double d = Math.random();
                             p.teleport(p.getLocation().add(new Vector((d - 0.5) * 30, 0, (d - 0.5) * 30)));
                         }

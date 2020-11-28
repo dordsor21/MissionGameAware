@@ -3,27 +3,16 @@ package me.dordsor21.MissionGameAware.challenges.impl;
 import me.dordsor21.MissionGameAware.MissionGameAware;
 import me.dordsor21.MissionGameAware.challenges.Challenge;
 import me.dordsor21.MissionGameAware.twists.Twist;
-import me.dordsor21.MissionGameAware.twists.impl.Bees;
 import me.dordsor21.MissionGameAware.twists.impl.Blindness;
-import me.dordsor21.MissionGameAware.twists.impl.BlindnessTeleport;
 import me.dordsor21.MissionGameAware.twists.impl.Cookies;
 import me.dordsor21.MissionGameAware.twists.impl.FakeNuke;
-import me.dordsor21.MissionGameAware.twists.impl.HangOn;
 import me.dordsor21.MissionGameAware.twists.impl.ItemsGoBye;
-import me.dordsor21.MissionGameAware.twists.impl.KittyCannonEract;
 import me.dordsor21.MissionGameAware.twists.impl.LaserFocus;
-import me.dordsor21.MissionGameAware.twists.impl.Lightning;
-import me.dordsor21.MissionGameAware.twists.impl.LookDown;
-import me.dordsor21.MissionGameAware.twists.impl.LookUp;
 import me.dordsor21.MissionGameAware.twists.impl.Nausea;
 import me.dordsor21.MissionGameAware.twists.impl.NightDay;
 import me.dordsor21.MissionGameAware.twists.impl.PumpkinHead;
-import me.dordsor21.MissionGameAware.twists.impl.RandomTeleport;
-import me.dordsor21.MissionGameAware.twists.impl.Sheep;
-import me.dordsor21.MissionGameAware.twists.impl.SimonSaysFunBoxTime;
 import me.dordsor21.MissionGameAware.twists.impl.Speed02;
 import me.dordsor21.MissionGameAware.twists.impl.Speed10;
-import me.dordsor21.MissionGameAware.twists.impl.TeleportAbout;
 import me.dordsor21.MissionGameAware.twists.impl.Zoom;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -38,20 +27,18 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
-public class Build2Challenge extends Challenge {
+public class SpleefChallenge extends Challenge {
 
     private static final List<Supplier<Twist>> twists = Collections.unmodifiableList(Arrays
-        .asList(BlindnessTeleport::new, Blindness::new, Bees::new, Cookies::new, FakeNuke::new, HangOn::new, ItemsGoBye::new,
-            KittyCannonEract::new, LaserFocus::new, Lightning::new, LookDown::new, LookUp::new, Nausea::new,
-            PumpkinHead::new, RandomTeleport::new, Sheep::new, SimonSaysFunBoxTime::new, Speed02::new, Speed10::new,
-            TeleportAbout::new, Zoom::new, NightDay::new));
+        .asList(Blindness::new, Cookies::new, FakeNuke::new, ItemsGoBye::new, LaserFocus::new, Nausea::new, PumpkinHead::new,
+            Speed02::new, Speed10::new, Zoom::new, NightDay::new));
     private static final AtomicInteger descrStage = new AtomicInteger(0);
     private static ScheduledFuture<?> descr;
     private boolean running = false;
 
     @Override
     public Type getType() {
-        return Type.BUILD;
+        return Type.MINIGAME;
     }
 
     @Override
@@ -71,6 +58,10 @@ public class Build2Challenge extends Challenge {
     @Override
     public void run() {
         this.running = true;
+        Random r = new Random();
+        while (MissionGameAware.queueTwists.getAndDecrement() > 0) {
+            MissionGameAware.plugin.getTwistLocks().queueTwist(twists.get(r.nextInt(twists.size())).get());
+        }
         descr = Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(new Describe(), 1L, 5L, TimeUnit.SECONDS);
     }
 
@@ -83,12 +74,10 @@ public class Build2Challenge extends Challenge {
                     switch (descrStage.get()) {
                         case 0:
                             Bukkit.broadcastMessage(
-                                "\u00A77You have \u00A7aone hour\u00A77 to form a creation from the most popular community voted "
-                                    + "themes and ideas released since the start of the event.");
+                                "\u00A77A classic and in a familiar setting, our \u00A7fspleef\u00A77 arena is an edited version of our \u00A762016 Buildcon hub\u00A77!");
                             break;
                         case 1:
-                            Bukkit.broadcastMessage(
-                                "\u00A77We'll broadcast the winning options of each poll, try to include the theme, object or idea within your build. Good luck!");
+                            Bukkit.broadcastMessage("\u00A77Prepare for some amped up spleef with our \u00A74twists...");
                             break;
                         case 2:
                             Random r = new Random();
@@ -97,11 +86,9 @@ public class Build2Challenge extends Challenge {
                                     .queueTwist(twists.get(r.nextInt(twists.size())).get());
                             }
                             for (Player p : Bukkit.getOnlinePlayers()) {
-                                Bukkit.dispatchCommand(p, "plot home");
-                                Bukkit.dispatchCommand(p, "plot list shared world");
-                                p.sendMessage("Didn't get teleported to a plot? Hit the [1] in the message above!");
-                                p.sendMessage("Didn't get a plot in your list, shout!");
+                                Bukkit.dispatchCommand(p, "spleef join spleef");
                             }
+                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "spleef forcestart spleef");
                             descr.cancel(false);
                             break;
                     }

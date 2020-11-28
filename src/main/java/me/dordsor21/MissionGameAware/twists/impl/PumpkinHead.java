@@ -3,6 +3,7 @@ package me.dordsor21.MissionGameAware.twists.impl;
 import me.dordsor21.MissionGameAware.MissionGameAware;
 import me.dordsor21.MissionGameAware.twists.MeanTwist;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -37,6 +38,8 @@ public class PumpkinHead extends MeanTwist {
             if (escaped.contains(p)) {
                 continue;
             }
+            p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&4Twist&f: " + this.getClass().getSimpleName()),
+                0, 70, 20);
             p.getInventory().setHelmet(new ItemStack(Material.CARVED_PUMPKIN));
         }
         Bukkit.getPluginManager().registerEvents((listener = new JackoListener()), MissionGameAware.plugin);

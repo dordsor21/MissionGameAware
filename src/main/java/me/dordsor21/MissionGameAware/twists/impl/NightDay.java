@@ -3,6 +3,7 @@ package me.dordsor21.MissionGameAware.twists.impl;
 import me.dordsor21.MissionGameAware.MissionGameAware;
 import me.dordsor21.MissionGameAware.twists.MeanTwist;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -11,12 +12,13 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class NightDay extends MeanTwist {
 
     private final Set<Player> escaped = new LinkedHashSet<>();
     private ScheduledFuture<?> runner = null;
-    private boolean day = false;
+    private AtomicBoolean day = new AtomicBoolean(false);
     private BukkitTask t = null;
 
     @Override
@@ -32,13 +34,18 @@ public class NightDay extends MeanTwist {
         escaped.clear();
         runner = Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
             try {
-                for (Player p : Bukkit.getOnlinePlayers()) {
-                    if (escaped.contains(p)) {
-                        continue;
+                Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
+                    for (Player p : Bukkit.getOnlinePlayers()) {
+                        if (escaped.contains(p)) {
+                            continue;
+                        }
+                        p.sendTitle("",
+                            ChatColor.translateAlternateColorCodes('&', "&4Twist&f: " + this.getClass().getSimpleName()), 0,
+                            70, 20);
+                        p.setPlayerTime(day.get() ? 6000L : 12000L, false);
                     }
-                    p.setPlayerTime(day ? 6000L : 12000L, false);
-                }
-                day = !day;
+                    day.set(!day.get());
+                });
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

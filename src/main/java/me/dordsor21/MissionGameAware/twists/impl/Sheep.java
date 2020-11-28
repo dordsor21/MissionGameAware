@@ -6,6 +6,7 @@ import me.dordsor21.MissionGameAware.twists.WeirdTwist;
 import net.minecraft.server.v1_16_R3.Entity;
 import net.minecraft.server.v1_16_R3.IChatBaseComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Sound;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftSheep;
@@ -43,6 +44,12 @@ public class Sheep extends WeirdTwist implements SoleTwist {
     @Override
     public void start() {
         System.out.println(this.getClass().getSimpleName() + " twist started.");
+        Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&4Twist&f: " + this.getClass().getSimpleName()),
+                    0, 70, 20);
+            }
+        });
         t = new Thread(() -> {
             try {
                 for (Player p : Bukkit.getOnlinePlayers()) {

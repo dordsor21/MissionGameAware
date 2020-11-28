@@ -4,6 +4,7 @@ import me.dordsor21.MissionGameAware.MissionGameAware;
 import me.dordsor21.MissionGameAware.twists.MeanTwist;
 import me.dordsor21.MissionGameAware.twists.Twist;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
@@ -27,6 +28,12 @@ public class FakeNuke extends MeanTwist {
     @Override
     public void start() {
         System.out.println(this.getClass().getSimpleName() + " twist started.");
+        Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&4Twist&f: Nuke"),
+                    0, 70, 20);
+            }
+        });
         escaped.clear();
         t = new Thread(() -> {
             try (final Twist twist = FakeNuke.this) {

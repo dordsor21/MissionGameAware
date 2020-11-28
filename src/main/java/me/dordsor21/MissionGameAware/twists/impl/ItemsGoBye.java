@@ -4,6 +4,7 @@ import me.dordsor21.MissionGameAware.MissionGameAware;
 import me.dordsor21.MissionGameAware.twists.SoleTwist;
 import me.dordsor21.MissionGameAware.twists.WeirdTwist;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,6 +21,12 @@ public class ItemsGoBye extends WeirdTwist implements SoleTwist {
     @Override
     public void start() {
         System.out.println(this.getClass().getSimpleName() + " twist started.");
+        Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&4Twist&f: " + this.getClass().getSimpleName()),
+                    0, 70, 20);
+            }
+        });
         Bukkit.getPluginManager().registerEvents((listener = new ItemsGoByeListener()), MissionGameAware.plugin);
         Bukkit.getScheduler().runTaskLater(MissionGameAware.plugin, this::complete, 20 * 20L);
     }

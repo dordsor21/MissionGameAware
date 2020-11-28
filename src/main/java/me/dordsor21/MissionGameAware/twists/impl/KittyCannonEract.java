@@ -3,6 +3,7 @@ package me.dordsor21.MissionGameAware.twists.impl;
 import me.dordsor21.MissionGameAware.MissionGameAware;
 import me.dordsor21.MissionGameAware.twists.WeirdTwist;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Cat;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -26,6 +27,12 @@ public class KittyCannonEract extends WeirdTwist {
     @Override
     public void start() {
         System.out.println(this.getClass().getSimpleName() + " twist started.");
+        Bukkit.getScheduler().runTask(MissionGameAware.plugin, () -> {
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&4Twist&f: " + this.getClass().getSimpleName()),
+                    0, 70, 20);
+            }
+        });
         escaped.clear();
         Bukkit.getPluginManager().registerEvents((listener = new KittyCannonListener()), MissionGameAware.plugin);
         r = Bukkit.getScheduler().runTaskLater(MissionGameAware.plugin, this::complete, 600L);
